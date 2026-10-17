@@ -21,7 +21,7 @@
   color-scheme:dark;
 }
 [hidden]{display:none!important}
-html,body{height:100%}
+html,body{height:100%;overscroll-behavior:none}
 body{background:var(--night);color:var(--milk);font-family:var(--f-ui);overflow:hidden;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 #app{position:relative;height:100%;max-width:560px;margin:0 auto;overflow:hidden;background:var(--night)}
@@ -509,7 +509,13 @@ function release(e){
   }
   ptrs.delete(e.pointerId);
 }
-cv.addEventListener('pointerup', release); cv.addEventListener('pointercancel', release);
+cv.addEventListener('pointerup', release);
+// ブラウザが指の動きをスクロール等に横取りすると pointercancel が来る。
+// その時の座標は当てにならないので、最後に取れた位置のままフリック判定してから離す
+cv.addEventListener('pointercancel', e=>release({pointerId:e.pointerId}));
+// iOS Safari では下・左右に払うと戻る/引っぱり更新などの操作に取られて指の追跡が途切れるため、
+// プレイ中はキャンバス上のタッチ操作をすべてゲーム側で受け取る
+for(const ev of ['touchstart','touchmove']) cv.addEventListener(ev, e=>{ if(state==='play') e.preventDefault(); }, {passive:false});
 
 /* ---------- loop ---------- */
 function update(now){
