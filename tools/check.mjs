@@ -5,6 +5,7 @@ import { dirname, extname, join, relative, resolve } from 'node:path';
 
 const ROOT = resolve('www');
 const errors = [];
+const warnings = [];
 
 async function walk(dir) {
   const out = [];
@@ -37,6 +38,15 @@ for (const file of files) {
   for (const m of text.matchAll(REF)) {
     const ref = m[1] || m[2] || m[3];
     if (/^(data:|#|mailto:|javascript:)/.test(ref)) continue;
+    // JS のテンプレート文字列（img/t_${key}.jpg など）は実行時に決まるので静的には確かめない
+    if (ref.includes('${')) continue;
+    // 'img/s_' + key のように文字列連結で組み立てるパスも実行時に決まるので確かめない
+    if (/^\s*\+/.test(text.slice(m.index + m[0].length))) continue;
+    // Google Fonts はオフラインだと読めないが、代わりのフォントで表示は崩れないので警告にとどめる
+    if (/^https:\/\/fonts\.(googleapis|gstatic)\.com/.test(ref)) {
+      warnings.push(`${rel}: Google Fonts はオンライン時のみ読み込まれます（オフラインでは代替フォント）: ${ref}`);
+      continue;
+    }
     if (/^(https?:)?\/\//.test(ref)) {
       errors.push(`${rel}: 外部URLを参照しています（オフラインで動作しません）: ${ref}`);
       continue;
@@ -50,6 +60,7 @@ for (const file of files) {
   }
 }
 
+if (warnings.length) console.warn(warnings.join("\n"));
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);

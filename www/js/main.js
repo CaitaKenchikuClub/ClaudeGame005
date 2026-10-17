@@ -1,15 +1,11 @@
-// エントリーポイント。現時点ではゲーム本体は未実装で、
-// 画面サイズ追従・タッチ入力・音声の初回アンロックの土台だけを用意している。
+// タイトル画面。スタートでゲーム本体（game/index.html）へ移動する。
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const overlay = document.getElementById('overlay');
 const startButton = document.getElementById('start');
-const hud = document.getElementById('hud');
-const backButton = document.getElementById('back');
 
 let audioCtx = null;
-let playing = false;
 const taps = [];
 
 function resize() {
@@ -32,16 +28,6 @@ function unlockAudio() {
 function draw(now) {
   const { width, height } = canvas.getBoundingClientRect();
   ctx.clearRect(0, 0, width, height);
-  if (playing) {
-    // 仮の判定ライン。プレイ画面に切り替わったことが分かるように表示する
-    const y = height * 0.8;
-    ctx.strokeStyle = 'rgba(240, 240, 245, 0.5)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(width, y);
-    ctx.stroke();
-  }
   for (let i = taps.length - 1; i >= 0; i--) {
     const age = (now - taps[i].t) / 400;
     if (age >= 1) {
@@ -63,27 +49,19 @@ canvas.addEventListener('pointerdown', (e) => {
   taps.push({ x: e.clientX - rect.left, y: e.clientY - rect.top, t: performance.now() });
 });
 
-function showScreen(play) {
-  playing = play;
-  overlay.hidden = play;
-  hud.hidden = !play;
-}
+// ゲーム本体は game/ にある。?v= はゲーム更新時に上げ、古いキャッシュが残らないようにする
+const GAME_URL = 'game/index.html?v=3';
 
 startButton.addEventListener('click', () => {
   unlockAudio();
-  showScreen(true);
-});
-
-backButton.addEventListener('click', () => {
-  if (audioCtx) audioCtx.suspend();
-  showScreen(false);
+  location.href = GAME_URL;
 });
 
 // アプリのバックグラウンド移行時は音声を止める（Capacitor 化後も同じイベントで動作する）
 document.addEventListener('visibilitychange', () => {
   if (!audioCtx) return;
   if (document.hidden) audioCtx.suspend();
-  else if (playing) audioCtx.resume();
+  else audioCtx.resume();
 });
 
 window.addEventListener('resize', resize);
