@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#101018">
   <title>ClaudeGame005</title>
+  <!-- 更新時は ?v= の数字を上げる。ブラウザに古い CSS/JS が残って画面が切り替わらなくなるのを防ぐ -->
   <!-- GitHub Pages のサブパス配信と Capacitor の両方で壊れないよう、リソースは必ず相対パスで指定する -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
   <main id="app">
@@ -23,6 +24,6 @@
       <button id="back" type="button">タイトルへ戻る</button>
     </div>
   </main>
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js?v=2"></script>
 </body>
 </html>
