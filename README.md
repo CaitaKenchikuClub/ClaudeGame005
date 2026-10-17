@@ -2,7 +2,7 @@
 
 ブラウザで遊べるリズムゲームです。現在は GitHub Pages での公開を想定し、将来は Capacitor で Android などのスマートフォンアプリとして配布する予定です。
 
-現時点ではゲーム本体は未実装で、画面サイズ追従・タッチ入力・音声アンロックだけを備えた起動用の土台があります。
+現時点ではゲーム本体は未実装です。タイトル画面と仮のプレイ画面を行き来できる、起動用の土台だけがあります。この土台は画面サイズへの追従、タッチ入力、音声アンロックを備えています。
 
 ## 技術スタック
 
@@ -12,6 +12,7 @@
 
 | パス | 役割 |
 | --- | --- |
+| `index.html` | リポジトリ直下を公開した場合に `www/` へ転送するページ |
 | `www/` | 公開されるゲーム本体。GitHub Pages の公開対象であり、将来 Capacitor の `webDir` にもなる |
 | `www/index.html` | エントリーポイント |
 | `www/css/` | スタイル |
@@ -27,7 +28,7 @@
 npm start
 ```
 
-`http://localhost:8080/ClaudeGame005/` を開くと、GitHub Pages と同じサブパス構成で動作を確認できます。ポートは `PORT=3000 npm start` のように変更できます。
+`http://localhost:8080/ClaudeGame005/` を開くと、サブパス配下での動作を確認できます。ポートは `PORT=3000 npm start` のように変更できます。
 
 ## テスト
 
@@ -47,7 +48,7 @@ CDN やWebフォントなど外部URLからの読み込みは行わず、必要�
 
 ## GitHub Pages での公開
 
-リポジトリ所有者が Settings > Pages の Source を「GitHub Actions」に設定すると、`main` への push ごとに `www/` が公開されます。設定前はデプロイジョブがスキップされ、チェックのみ実行されます。詳細は [docs/github-pages.md](docs/github-pages.md) を参照してください。
+現在は `main` ブランチのリポジトリ直下から公開されています。ゲームは https://caitakenchikuclub.github.io/ClaudeGame005/www/ で遊べます。直下の `index.html` が `www/` へ転送します。`www/` だけを公開する GitHub Actions 方式への切り替え手順は [docs/github-pages.md](docs/github-pages.md) を参照してください。
 
 ## 今後の設計メモ
 

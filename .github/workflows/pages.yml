@@ -1,6 +1,7 @@
-# www/ を GitHub Pages に公開するワークフロー。
-# リポジトリ所有者が Settings > Pages の Source を「GitHub Actions」にするまでは
-# デプロイジョブはスキップされ、チェックだけが実行される。
+# push ごとにチェックを実行し、必要に応じて www/ を GitHub Pages に公開するワークフロー。
+# デプロイジョブは、Settings > Pages の Source を「GitHub Actions」にし、
+# リポジトリ変数 PAGES_VIA_ACTIONS を true にした場合だけ実行される。
+# 「Deploy from a branch」で公開している間はチェックだけが実行される。
 name: Check and deploy to GitHub Pages
 
 on:
@@ -29,7 +30,7 @@ jobs:
 
   deploy:
     needs: check
-    if: github.event.repository.has_pages
+    if: vars.PAGES_VIA_ACTIONS == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

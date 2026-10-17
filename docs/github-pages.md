@@ -1,16 +1,21 @@
 # GitHub Pages での公開
 
-## 公開方式
+## 現在の公開方式
 
-ゲーム本体を `www/` に置き、GitHub Actions（`.github/workflows/pages.yml`）で `www/` だけを公開します。
+現在は Settings > Pages の「Deploy from a branch」で、`main` ブランチのリポジトリ直下から公開されています。ゲームの URL は `https://caitakenchikuclub.github.io/ClaudeGame005/www/` です。
 
-ブランチから直接公開する方式は公開元に「リポジトリ直下」か「`/docs`」しか選べず、Capacitor の慣例である `www/` と両立しにくいため、Actions 方式を採用しました。リポジトリ直下を公開すると README やツール類まで公開される問題も避けられます。
+リポジトリ直下の `index.html` は `www/` に転送するだけのページです。そのため `https://caitakenchikuclub.github.io/ClaudeGame005/` を開いてもゲームが表示されます。
 
-## 所有者が行う設定
+この方式では README や `docs/`、`tools/` も公開されます。秘密情報は置かない運用なので実害はありません。
 
-Settings > Pages を開き、Build and deployment の Source を「GitHub Actions」に変更します。その後 `main` に push するか、Actions タブから「Check and deploy to GitHub Pages」を手動実行すると公開されます。
+## GitHub Actions 方式への切り替え（任意）
 
-公開URLは `https://caitakenchikuclub.github.io/ClaudeGame005/` になる見込みです。Source を「Deploy from a branch」にした場合、このワークフローのデプロイは失敗するので注意してください。
+`www/` だけを公開し、URL を `/ClaudeGame005/` 直下にしたい場合は、所有者が次の2つを行います。
+
+1. Settings > Pages の Source を「GitHub Actions」に変更する
+2. Settings > Secrets and variables > Actions の Variables に `PAGES_VIA_ACTIONS` を `true` で追加する
+
+すると `.github/workflows/pages.yml` のデプロイジョブが有効になり、`main` への push ごとに `www/` が公開されます。変数を設定しない間は、push 時にチェックだけが実行されます。
 
 ## サブパス配信の注意点
 
@@ -18,7 +23,7 @@ Settings > Pages を開き、Build and deployment の Source を「GitHub Action
 
 `fetch()` で譜面や音源を読む場合も `fetch('charts/song1.json')` のように相対パスで書きます。JS モジュールから基準を明示したいときは `new URL('../charts/song1.json', import.meta.url)` を使います。
 
-`www/.nojekyll` は Jekyll 処理によって `_` で始まるファイルが除外されるのを防ぐためのものです。
+リポジトリ直下と `www/` の `.nojekyll` は、Jekyll 処理によって `_` で始まるファイルが除外されるのを防ぐためのものです。直下のものはブランチ公開用、`www/` のものは Actions 公開用です。
 
 ## 将来の課題
 
