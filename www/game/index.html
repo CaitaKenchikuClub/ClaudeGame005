@@ -784,10 +784,14 @@ async function makeResultImage(blob, r){
   c.save(); c.shadowColor = isS ? 'rgba(159,243,220,.6)' : 'rgba(255,61,127,.6)'; c.shadowBlur = 50;
   // SSS など横に長いランクでも、右の称号が入る幅を残す
   let rz = 230; c.font = '400 '+rz+'px '+POP; while(c.measureText(r.rank).width > maxW*.6 && rz > 120){ rz -= 6; c.font = '400 '+rz+'px '+POP; }
-  const rkW = c.measureText(r.rank).width;
-  c.fillStyle = rcol; c.fillText(r.rank, x0-6, 525); c.restore();
+  // フォントごとに文字の上下の伸びが違うので、実際の高さを測って難易度表示と SCORE の間（318〜505）に収める
+  const zoneTop = 318, zoneBot = 505;
+  let m = c.measureText(r.rank), asc = m.actualBoundingBoxAscent || rz*.72, desc = m.actualBoundingBoxDescent || 0;
+  if(asc + desc > zoneBot - zoneTop){ rz = Math.floor(rz * (zoneBot - zoneTop) / (asc + desc)); c.font = '400 '+rz+'px '+POP; m = c.measureText(r.rank); asc = m.actualBoundingBoxAscent || rz*.72; desc = m.actualBoundingBoxDescent || 0; }
+  const rkW = m.width, rTop = zoneTop + ((zoneBot - zoneTop) - (asc + desc)) / 2;
+  c.fillStyle = rcol; c.fillText(r.rank, x0-6, rTop + asc); c.restore();
   c.font = '400 30px '+DOT;
-  let by = 410;
+  let by = rTop + 48;
   if(r.badge){ c.fillStyle = '#9ff3dc'; c.fillText(r.badge, x0 + rkW + 30, by); by += 48; }
   if(r.newBest){ c.fillStyle = '#ff9ccf'; c.fillText('NEW BEST ♡', x0 + rkW + 30, by); }
   // スコア
