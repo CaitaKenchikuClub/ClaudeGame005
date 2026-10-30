@@ -181,7 +181,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .tab[aria-selected=true]{color:var(--pink)}
 .tab[aria-selected=true]::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--pink);box-shadow:0 0 10px var(--pink)}
 .tab[aria-disabled=true]{opacity:.42;cursor:default}
-.tab .soon{position:absolute;top:6px;left:50%;margin-left:6px;padding:1px 5px;border-radius:6px;background:var(--night-2);border:1px solid var(--fog);font-size:8px;color:var(--milk);letter-spacing:0}
+.tab .soon{position:absolute;top:6px;left:50%;margin-left:6px;padding:1px 5px;border-radius:6px;background:var(--night-2);border:1px solid var(--fog);font-size:8px;color:var(--milk);letter-spacing:0;white-space:nowrap}
 
 /* ---------- ホーム ---------- */
 #top{padding:0;overflow:hidden;background:
@@ -191,12 +191,14 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .topHead{position:absolute;z-index:4;top:max(12px,env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:0}
 .topHead b{font-family:var(--f-pop);font-weight:400;font-size:22px;color:var(--milk);text-shadow:0 0 12px rgba(255,156,207,.8)}
 .topHead small{font-family:var(--f-dot);font-size:10px;letter-spacing:.35em;color:var(--pink)}
-#chara{position:absolute;left:0;right:64px;top:92px;bottom:0;display:flex;justify-content:center;align-items:flex-end;padding:0}
+/* 吹き出しの場所（2行ぶん）をキャラの上に確保して、顔に重ならないようにする */
+#top{--talkTop:calc(max(12px,env(safe-area-inset-top,0px)) + 54px);--talkH:84px}
+#chara{position:absolute;left:0;right:64px;top:calc(var(--talkTop) + var(--talkH) + 14px);bottom:0;display:flex;justify-content:center;align-items:flex-end;padding:0}
 #charaImg{height:100%;max-width:100%;object-fit:contain;object-position:bottom;transform-origin:50% 100%;
   filter:drop-shadow(0 0 18px rgba(201,178,255,.45)) drop-shadow(0 12px 30px rgba(255,61,127,.25));animation:standIn .6s cubic-bezier(.2,1.4,.4,1) both, sway 5s ease-in-out .6s infinite}
 #chara.hop #charaImg{animation:hop .45s cubic-bezier(.3,1.6,.5,1)}
 @keyframes hop{30%{transform:translateY(-14px) scale(1.02,.98)}}
-.talk{position:absolute;z-index:6;top:calc(max(12px,env(safe-area-inset-top,0px)) + 52px);left:max(16px,env(safe-area-inset-left,0px));right:76px;display:flex;justify-content:center;pointer-events:none}
+.talk{position:absolute;z-index:6;top:var(--talkTop);height:var(--talkH);left:max(16px,env(safe-area-inset-left,0px));right:76px;display:flex;justify-content:center;align-items:flex-end;pointer-events:none}
 .talk p{position:relative;margin:0;max-width:100%;padding:10px 16px 11px;border-radius:20px;background:var(--milk);color:#4a2156;font-family:var(--f-pop);font-size:15px;line-height:1.45;text-align:center;word-break:auto-phrase;text-wrap:balance;
   box-shadow:0 0 0 2px var(--pink),0 0 0 4px var(--milk),0 8px 22px rgba(255,61,127,.45);animation:pop .4s cubic-bezier(.2,1.6,.4,1) both}
 .talk p::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-6px;width:12px;height:12px;background:var(--milk);transform:rotate(45deg);box-shadow:2px 2px 0 0 var(--pink)}
