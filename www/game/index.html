@@ -722,12 +722,26 @@ function finish(){
   $('rBest').textContent = sc>prev ? 'NEW BEST ♡' : 'BEST '+prev.toLocaleString();
   if(sc>prev) store.set(key, sc);
   lastResult = {title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent};
+  // 共有メニューはタップした瞬間に呼ばないと開けないため、ジャケット画像は結果表示の時点で用意しておく
+  prepareShareImage(song);
   idleDraw(); show('result');
 }
 $('rRetry').onclick = startGame;
 $('rBack').onclick = toDetail;
 // 結果を X に投稿する。投稿画面を開くだけなので、ログインや送信はユーザー自身が行う
 let lastResult = null;
+let shareFile = null, shareFileFor = null;
+function prepareShareImage(s){
+  if(shareFileFor===s.key) return;
+  shareFile = null; shareFileFor = s.key;
+  fetch('img/j_'+s.key+'.jpg').then(r=>r.ok ? r.blob() : Promise.reject(r.status))
+    .then(b=>{ if(shareFileFor===s.key) shareFile = new File([b], 'picklemellow_'+s.key+'.jpg', {type:'image/jpeg'}); })
+    .catch(()=>{});
+}
+// スマホで画像付き共有ができる時は共有メニューを使う（X の投稿リンクには画像を付けられないため）
+function canShareImage(){
+  try{ return !!(shareFile && navigator.share && navigator.canShare && matchMedia('(pointer:coarse)').matches && navigator.canShare({files:[shareFile]})); }catch(e){ return false; }
+}
 function copyText(t){
   let ok = false;
   try{ navigator.clipboard.writeText(t).then(()=>toast('文面をコピーしました ♡'), ()=>{}); ok = true; }catch(e){}
@@ -749,6 +763,13 @@ $('rShare').onclick = ()=>{
   copyText(full);
   // iPhone の X アプリは x.com/intent/post だと文面を受け取れないことがあるため、旧形式の URL を使う。
   // URL も本文に含めて渡す（url パラメータだけ落ちることがあるため）
+  if(canShareImage()){
+    navigator.share({files:[shareFile], text:full}).catch(err=>{ if(err && err.name!=='AbortError') openIntent(full); });
+    return;
+  }
+  openIntent(full);
+};
+function openIntent(full){
   const href = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(full);
   // window.open が止められる環境ではリンクのクリックで開く
   if(!window.open(href, '_blank', 'noopener')){ const a=document.createElement('a'); a.href=href; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
