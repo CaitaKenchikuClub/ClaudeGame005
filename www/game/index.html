@@ -163,6 +163,8 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .c-p{color:var(--mint)!important}.c-g{color:var(--pink)!important}.c-o{color:var(--lilac)!important}
 .newbest{color:var(--pink);text-align:center;font-size:12px;letter-spacing:.2em;font-family:var(--f-dot)}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.share{display:flex;align-items:center;justify-content:center;gap:8px;background:#000;border-color:rgba(255,241,248,.35)}
+.share b{font-family:var(--f-ui);font-size:18px;line-height:1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -246,6 +248,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
       <dt>MISS</dt><dd id="cM">0</dd>
       <dt>MAX COMBO</dt><dd id="cC">0</dd>
     </dl>
+    <button class="mbtn share" id="rShare"><b>𝕏</b>スコアをポストする</button>
     <div class="btns"><button class="mbtn" id="rRetry">もう一回</button><button class="mbtn primary" id="rBack">曲えらびへ</button></div>
   </section>
 
@@ -671,10 +674,22 @@ function finish(){
   const key='best.'+song.id+'.'+diff, prev = store.get(key, 0);
   $('rBest').textContent = sc>prev ? 'NEW BEST ♡' : 'BEST '+prev.toLocaleString();
   if(sc>prev) store.set(key, sc);
+  lastResult = {title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent};
   idleDraw(); show('result');
 }
 $('rRetry').onclick = startGame;
 $('rBack').onclick = toDetail;
+// 結果を X に投稿する。投稿画面を開くだけなので、ログインや送信はユーザー自身が行う
+let lastResult = null;
+$('rShare').onclick = ()=>{
+  if(!lastResult) return;
+  const r = lastResult;
+  const text = 'Pickle♡Mellow リズム\n'
+    + '『'+r.title+'』'+r.diff+' Lv.'+r.lv+'\n'
+    + 'SCORE '+r.score.toLocaleString()+'（'+r.rank+'）'+(r.badge ? ' '+r.badge : '');
+  const url = new URL('../', location.href).href;  // ゲームのトップページ
+  window.open('https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url), '_blank', 'noopener');
+};
 </script>
 
 </body></html>
