@@ -663,7 +663,13 @@ $('resumeBtn').onclick = async ()=>{ show('play'); await ctx.resume(); };
 $('retryBtn').onclick = async ()=>{ await ctx.resume(); startGame(); };
 $('quitBtn').onclick = async ()=>{ await ctx.resume(); toDetail(); };
 function toDetail(){ running=false; stopMusic(); idleDraw(); wipeTo(()=>{ show('detail'); renderOpts(); startPreview(); }); }
-document.addEventListener('visibilitychange', ()=>{ if(document.hidden) pause(); });
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) pause(); else wakeAudio(); });
+// iPhone では別アプリ（X など）へ移って戻ると、OS が音声を止めたまま（suspended / interrupted）になる。
+// 一時停止中以外は、戻ってきた時と画面に触れた時に毎回音声を再開して、音が消えたままにならないようにする
+function wakeAudio(){ if(state!=='pause' && ctx.state!=='running'){ try{ ctx.resume(); }catch(e){} } }
+window.addEventListener('pageshow', wakeAudio);
+window.addEventListener('focus', wakeAudio);
+for(const ev of ['pointerdown','touchend','click']) document.addEventListener(ev, wakeAudio, {capture:true, passive:true});
 function finish(){
   running=false;
   const sc = scoreNow();
