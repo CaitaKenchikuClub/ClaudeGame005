@@ -681,14 +681,18 @@ $('rRetry').onclick = startGame;
 $('rBack').onclick = toDetail;
 // 結果を X に投稿する。投稿画面を開くだけなので、ログインや送信はユーザー自身が行う
 let lastResult = null;
+const PUBLIC_URL = 'https://caitakenchikuclub.github.io/ClaudeGame005/www/';
 $('rShare').onclick = ()=>{
   if(!lastResult) return;
   const r = lastResult;
   const text = 'Pickle♡Mellow リズム\n'
     + '『'+r.title+'』'+r.diff+' Lv.'+r.lv+'\n'
     + 'SCORE '+r.score.toLocaleString()+'（'+r.rank+'）'+(r.badge ? ' '+r.badge : '');
-  const url = new URL('../', location.href).href;  // ゲームのトップページ
-  window.open('https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url), '_blank', 'noopener');
+  // GitHub Pages で遊んでいる時はそのトップページ、それ以外（claude.ai の版など）は公開ページのURLを付ける
+  const url = location.hostname.endsWith('github.io') ? new URL('../', location.href).href : PUBLIC_URL;
+  const href = 'https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url);
+  // window.open が止められる環境ではリンクのクリックで開く
+  if(!window.open(href, '_blank', 'noopener')){ const a=document.createElement('a'); a.href=href; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
 };
 </script>
 
