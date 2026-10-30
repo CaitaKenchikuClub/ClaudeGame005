@@ -164,6 +164,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .newbest{color:var(--pink);text-align:center;font-size:12px;letter-spacing:.2em;font-family:var(--f-dot)}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .share{display:flex;align-items:center;justify-content:center;gap:8px;background:#000;border-color:rgba(255,241,248,.35)}
+#toast{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;padding:10px 16px;border-radius:999px;background:var(--milk);color:#4a2156;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);pointer-events:none}
 .share b{font-family:var(--f-ui);font-size:18px;line-height:1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -252,6 +253,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
     <div class="btns"><button class="mbtn" id="rRetry">もう一回</button><button class="mbtn primary" id="rBack">曲えらびへ</button></div>
   </section>
 
+  <div id="toast" role="status" hidden></div>
   <div id="wipe"></div>
 </div>
 
@@ -681,6 +683,13 @@ $('rRetry').onclick = startGame;
 $('rBack').onclick = toDetail;
 // 結果を X に投稿する。投稿画面を開くだけなので、ログインや送信はユーザー自身が行う
 let lastResult = null;
+function copyText(t){
+  let ok = false;
+  try{ navigator.clipboard.writeText(t).then(()=>toast('文面をコピーしました ♡'), ()=>{}); ok = true; }catch(e){}
+  if(!ok){ try{ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); if(document.execCommand('copy')) toast('文面をコピーしました ♡'); ta.remove(); }catch(e){} }
+}
+let toastTimer = 0;
+function toast(msg){ const el=$('toast'); el.textContent=msg; el.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>{ el.hidden=true; }, 2600); }
 const PUBLIC_URL = 'https://caitakenchikuclub.github.io/ClaudeGame005/www/';
 $('rShare').onclick = ()=>{
   if(!lastResult) return;
@@ -690,7 +699,12 @@ $('rShare').onclick = ()=>{
     + 'SCORE '+r.score.toLocaleString()+'（'+r.rank+'）'+(r.badge ? ' '+r.badge : '');
   // GitHub Pages で遊んでいる時はそのトップページ、それ以外（claude.ai の版など）は公開ページのURLを付ける
   const url = location.hostname.endsWith('github.io') ? new URL('../', location.href).href : PUBLIC_URL;
-  const href = 'https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url);
+  const full = text+'\n'+url;
+  // 万一アプリ側で文面が入らなかった時のために、先にクリップボードへコピーしておく
+  copyText(full);
+  // iPhone の X アプリは x.com/intent/post だと文面を受け取れないことがあるため、旧形式の URL を使う。
+  // URL も本文に含めて渡す（url パラメータだけ落ちることがあるため）
+  const href = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(full);
   // window.open が止められる環境ではリンクのクリックで開く
   if(!window.open(href, '_blank', 'noopener')){ const a=document.createElement('a'); a.href=href; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
 };
