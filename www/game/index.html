@@ -199,7 +199,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 #chara.hop #charaImg{animation:hop .45s cubic-bezier(.3,1.6,.5,1)}
 @keyframes hop{30%{transform:translateY(-14px) scale(1.02,.98)}}
 .talk{position:absolute;z-index:6;top:var(--talkTop);height:var(--talkH);left:max(16px,env(safe-area-inset-left,0px));right:76px;display:flex;justify-content:center;align-items:flex-end;pointer-events:none}
-.talk p{position:relative;margin:0;max-width:100%;padding:10px 16px 11px;border-radius:20px;background:var(--milk);color:#4a2156;font-family:var(--f-pop);font-size:15px;line-height:1.45;text-align:center;word-break:auto-phrase;text-wrap:balance;
+.talk p{position:relative;margin:0;max-width:100%;padding:10px 16px 11px;border-radius:20px;background:var(--milk);color:#4a2156;font-family:var(--f-ui);font-weight:700;font-size:15px;line-height:1.5;letter-spacing:.02em;text-align:center;word-break:auto-phrase;text-wrap:balance;
   box-shadow:0 0 0 2px var(--pink),0 0 0 4px var(--milk),0 8px 22px rgba(255,61,127,.45);animation:pop .4s cubic-bezier(.2,1.6,.4,1) both}
 .talk p::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-6px;width:12px;height:12px;background:var(--milk);transform:rotate(45deg);box-shadow:2px 2px 0 0 var(--pink)}
 .talk.out p{transition:opacity .35s,transform .35s;opacity:0;transform:translateY(-6px)}
@@ -250,6 +250,26 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .linkList b{font-family:var(--f-pop);font-weight:400;font-size:16px;display:block;word-break:keep-all;overflow-wrap:anywhere}
 .linkList small{font-family:var(--f-dot);font-size:10px;color:var(--dusk);letter-spacing:.08em}
 .linkList i{font-style:normal;color:var(--pink);font-size:18px}
+
+/* ---------- ハート（プレイに使う） ---------- */
+.hpill{display:flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:999px;background:rgba(20,10,24,.7);border:1px solid rgba(255,156,207,.5);
+  font-family:var(--f-dot);font-size:13px;color:var(--milk);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.hpill svg{width:18px;height:18px;fill:var(--blood);filter:drop-shadow(0 0 4px rgba(255,61,127,.7))}
+.hpill small{font-size:11px;color:var(--dusk)}
+.topHead .hpill{margin-top:8px;align-self:flex-start}
+.hearts{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:16px;background:rgba(20,10,24,.55);border:1px solid var(--fog)}
+.hrow{display:flex;gap:4px}
+.hrow svg{width:22px;height:22px;fill:rgba(255,241,248,.16)}
+.hrow svg.on{fill:var(--blood);filter:drop-shadow(0 0 4px rgba(255,61,127,.7))}
+.hrow svg.extra{fill:var(--mint);filter:drop-shadow(0 0 4px rgba(159,243,220,.7))}
+.htime{font-family:var(--f-dot);font-size:12px;color:var(--dusk);text-align:right;white-space:nowrap}
+.htime b{color:var(--milk);font-weight:400}
+.hbig{display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0 4px}
+.hbig .hrow svg{width:34px;height:34px}
+.hbig p{margin:0;font-size:13px;line-height:1.7;color:#e9d9e8;text-align:center}
+.hbig p b{font-family:var(--f-dot);font-weight:400;color:var(--milk);font-size:15px}
+.hbuy{width:100%;margin-top:6px;padding:14px;border-radius:18px;font-weight:700;font-size:15px;background:rgba(36,18,47,.9);border:1px dashed rgba(255,156,207,.5);color:var(--dusk)}
+.hlack{color:var(--blood)!important;font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -283,7 +303,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
   <section id="top" class="screen" hidden aria-label="ホーム">
     <div class="floaty" id="floatyTop"></div>
-    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small></div>
+    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small><button class="hpill" id="heartPill" aria-label="ハート"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button></div>
     <button id="chara" aria-label="話しかける"><img id="charaImg" alt=""></button>
     <div class="talk" id="talk" hidden aria-live="polite"><p id="talkText"></p></div>
     <div class="myName"><small>MY PARTNER</small><b id="charaName"></b></div>
@@ -300,7 +320,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   </section>
 
   <section id="detail" class="screen" hidden aria-label="難易度選択">
-    <div class="topbar"><button class="back" id="backBtn">‹ もどる</button><small id="dNo"></small></div>
+    <div class="topbar"><button class="back" id="backBtn">‹ もどる</button><small id="dNo"></small><button class="hpill" id="heartBar" aria-label="ハート"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartBarNum"></span><small id="heartBarTime"></small></button></div>
     <div class="hero">
       <div class="jk" id="dJacket"></div>
       <div style="min-width:0">
@@ -371,6 +391,15 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   <div class="sheet" id="sheetChara" hidden><div class="panel" role="dialog" aria-label="キャラクター変更">
     <header><h3>キャラクター変更</h3><button class="close" aria-label="閉じる">×</button></header>
     <div class="charas" id="charaList"></div>
+  </div></div>
+  <div class="sheet" id="sheetHeart" hidden><div class="panel" role="dialog" aria-label="ハート">
+    <header><h3>ハート</h3><button class="close" aria-label="閉じる">×</button></header>
+    <div class="hbig">
+      <span class="hrow" id="heartRowBig"></span>
+      <p id="heartMsg"></p>
+      <p>曲を1回プレイするごとにハートを1個使います。<br>5分ごとに1個、最大6個まで回復します。</p>
+      <button class="hbuy" id="heartBuy" disabled>ハートを回復する（準備中）</button>
+    </div>
   </div></div>
   <div class="sheet" id="sheetVol" hidden><div class="panel" role="dialog" aria-label="音量">
     <header><h3>音量</h3><button class="close" aria-label="閉じる">×</button></header>
@@ -650,6 +679,58 @@ $('volSe').addEventListener('change', ()=>playSE('tap'));
 $('btnVol').onclick = ()=>openSheet('sheetVol');
 applyVol();
 
+/* ---------- ハート ---------- */
+// 最大6個、5分ごとに1個回復、1プレイで1個使う。購入などで増やす時は addHearts(n) を呼ぶ（最大を超えて持てる）
+const HEART_MAX = 6, HEART_MS = 5*60*1000;
+const HEART_SVG = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg>';
+function heartState(){
+  let h = store.get('hearts', null);
+  const now = Date.now();
+  if(!h || typeof h.n!=='number') h = {n:HEART_MAX, t:now};
+  if(h.n >= HEART_MAX) h.t = now;
+  else {
+    const gain = Math.floor((now - h.t) / HEART_MS);
+    if(gain > 0){ h.n = Math.min(HEART_MAX, h.n + gain); h.t = h.n >= HEART_MAX ? now : h.t + gain*HEART_MS; }
+  }
+  if(h.t > now) h.t = now;  // 端末の時計が戻された時
+  store.set('hearts', h);
+  return h;
+}
+function nextHeartMs(h){ return h.n >= HEART_MAX ? 0 : HEART_MS - (Date.now() - h.t); }
+function fullHeartMs(h){ return h.n >= HEART_MAX ? 0 : nextHeartMs(h) + (HEART_MAX - h.n - 1)*HEART_MS; }
+const mmss = ms => { const t = Math.max(0, Math.ceil(ms/1000)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); };
+function addHearts(n){ const h = heartState(); h.n += n; if(h.n >= HEART_MAX) h.t = Date.now(); store.set('hearts', h); renderHearts(); }
+// 足りない時はハートのパネルを出して false を返す
+function useHeart(){
+  const h = heartState();
+  if(h.n < 1){ playSE('ui'); openHeartSheet(true); return false; }
+  if(h.n >= HEART_MAX) h.t = Date.now();  // 満タンから減った時は、そこから回復の時間を数える
+  h.n -= 1; store.set('hearts', h); renderHearts(); return true;
+}
+function heartRow(el, n){
+  const total = Math.max(HEART_MAX, n); el.innerHTML = '';
+  for(let i=0;i<total;i++){ const w=document.createElement('span'); w.innerHTML = HEART_SVG; const sv=w.firstChild;
+    if(i < n) sv.setAttribute('class', i >= HEART_MAX ? 'on extra' : 'on'); el.appendChild(sv); }
+}
+function renderHearts(){
+  const h = heartState(), next = nextHeartMs(h);
+  $('heartPillNum').textContent = h.n+'/'+HEART_MAX;
+  $('heartPillTime').textContent = h.n >= HEART_MAX ? '' : mmss(next);
+  $('heartBarNum').textContent = $('heartPillNum').textContent;
+  $('heartBarTime').textContent = $('heartPillTime').textContent;
+  heartRow($('heartRowBig'), h.n);
+  const msg = $('heartMsg');
+  if(h.n >= HEART_MAX){ msg.innerHTML = 'ハートは満タンです ♡ <b>'+h.n+'/'+HEART_MAX+'</b>'; }
+  else msg.innerHTML = 'いま <b>'+h.n+'/'+HEART_MAX+'</b>　つぎの回復まで <b>'+mmss(next)+'</b><br>満タンまで <b>'+mmss(fullHeartMs(h))+'</b>';
+  if(sheetHeartLack && h.n < 1) msg.innerHTML = '<span class="hlack">ハートが足りません</span><br>'+msg.innerHTML;
+}
+let sheetHeartLack = false;
+function openHeartSheet(lack){ sheetHeartLack = !!lack; renderHearts(); openSheet('sheetHeart'); }
+$('heartPill').onclick = ()=>openHeartSheet(false);
+$('heartBar').onclick = ()=>openHeartSheet(false);
+setInterval(renderHearts, 1000);
+renderHearts();
+
 /* ---------- リンク ---------- */
 LINK_ORDER.map(k=>STANDS.find(s=>s.key===k)).forEach(s=>{
   const a = document.createElement('a'); a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
@@ -682,7 +763,7 @@ function enterDetail(i){
     .then(buf=>{ if(tok!==loadToken) return; musicBuf = buf; bufFor = song.id; setGo(true); if(state==='detail') startPreview(); })
     .catch(e=>{ if(tok!==loadToken) return; console.error(e); $('goBtn').textContent='読み込めませんでした（もどって再選択）'; });
 }
-function setGo(ok, p){ const g=$('goBtn'); g.disabled=!ok; g.textContent = ok ? 'START ♡' : 'よみこみ中… '+Math.round((p||0)*100)+'%'; }
+function setGo(ok, p){ const g=$('goBtn'); g.disabled=!ok; g.textContent = ok ? 'START ♡×1' : 'よみこみ中… '+Math.round((p||0)*100)+'%'; }
 function renderOpts(){
   $('spOut').textContent = speed.toFixed(1);
   $('ofOut').textContent = (offsetMs>0?'+':'') + offsetMs + 'ms';
@@ -700,7 +781,7 @@ $('ofDn').onclick = ()=>{ offsetMs = Math.max(-300, offsetMs-10); store.set('off
 $('ofUp').onclick = ()=>{ offsetMs = Math.min(300, offsetMs+10); store.set('offset',offsetMs); renderOpts(); };
 document.querySelectorAll('.diff').forEach(b => b.onclick = ()=>{ diff = b.dataset.d; store.set('diff',diff); playSE('ui'); renderOpts(); });
 $('backBtn').onclick = ()=>{ playSE('ui'); wipeTo(()=>enterHome(false)); };
-$('goBtn').onclick = ()=>{ if(musicBuf && bufFor===song.id){ playSE('ui'); wipeTo(startGame); } };
+$('goBtn').onclick = ()=>{ if(musicBuf && bufFor===song.id){ if(!useHeart()) return; playSE('ui'); wipeTo(startGame); } };
 
 /* ---------- canvas & geometry ---------- */
 const cv = $('cv'), g2 = cv.getContext('2d');
@@ -951,7 +1032,7 @@ requestAnimationFrame(frame);
 async function pause(){ if(state!=='play') return; await ctx.suspend(); for(const [id] of ptrs) release({pointerId:id}); show('pause'); }
 $('pauseBtn').onclick = pause;
 $('resumeBtn').onclick = async ()=>{ show('play'); await ctx.resume(); };
-$('retryBtn').onclick = async ()=>{ await ctx.resume(); startGame(); };
+$('retryBtn').onclick = async ()=>{ if(!useHeart()) return; await ctx.resume(); startGame(); };
 $('quitBtn').onclick = async ()=>{ await ctx.resume(); toDetail(); };
 function toDetail(){ running=false; stopMusic(); idleDraw(); wipeTo(()=>{ show('detail'); renderOpts(); startPreview(); }); }
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden) pause(); else wakeAudio(); });
@@ -979,7 +1060,7 @@ function finish(){
   prepareShareImage(song, lastResult);
   idleDraw(); show('result');
 }
-$('rRetry').onclick = startGame;
+$('rRetry').onclick = ()=>{ if(!useHeart()) return; startGame(); };
 $('rBack').onclick = toDetail;
 // 結果を X に投稿する。投稿画面を開くだけなので、ログインや送信はユーザー自身が行う
 let lastResult = null;
