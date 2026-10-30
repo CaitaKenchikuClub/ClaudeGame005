@@ -50,7 +50,7 @@ canvas.addEventListener('pointerdown', (e) => {
 });
 
 // ゲーム本体は game/ にある。?v= はゲーム更新時に上げ、古いキャッシュが残らないようにする
-const GAME_URL = 'game/index.html?v=13';
+const GAME_URL = 'game/index.html?v=14';
 
 startButton.addEventListener('click', () => {
   unlockAudio();
