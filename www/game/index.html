@@ -721,9 +721,10 @@ function finish(){
   const key='best.'+song.id+'.'+diff, prev = store.get(key, 0);
   $('rBest').textContent = sc>prev ? 'NEW BEST ♡' : 'BEST '+prev.toLocaleString();
   if(sc>prev) store.set(key, sc);
-  lastResult = {title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent};
+  lastResult = {title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent,
+    p:J.p, g:J.g, o:J.o, m:J.m, combo:maxCombo, total:totalJ, newBest:sc>prev};
   // 共有メニューはタップした瞬間に呼ばないと開けないため、ジャケット画像は結果表示の時点で用意しておく
-  prepareShareImage(song);
+  prepareShareImage(song, lastResult);
   idleDraw(); show('result');
 }
 $('rRetry').onclick = startGame;
@@ -731,12 +732,81 @@ $('rBack').onclick = toDetail;
 // 結果を X に投稿する。投稿画面を開くだけなので、ログインや送信はユーザー自身が行う
 let lastResult = null;
 let shareFile = null, shareFileFor = null;
-function prepareShareImage(s){
-  if(shareFileFor===s.key) return;
-  shareFile = null; shareFileFor = s.key;
-  fetch('img/j_'+s.key+'.jpg').then(r=>r.ok ? r.blob() : Promise.reject(r.status))
-    .then(b=>{ if(shareFileFor===s.key) shareFile = new File([b], 'picklemellow_'+s.key+'.jpg', {type:'image/jpeg'}); })
+function prepareShareImage(s, r){
+  const tok = {}; shareFileFor = tok; shareFile = null;
+  fetch('img/j_'+s.key+'.jpg').then(res=>res.ok ? res.blob() : Promise.reject(res.status))
+    .then(async blob=>{
+      if(shareFileFor!==tok) return;
+      // まずジャケットそのものを用意しておき、リザルト画像ができたら差し替える
+      shareFile = new File([blob], 'picklemellow_'+s.key+'.jpg', {type:'image/jpeg'});
+      const out = await makeResultImage(blob, r).catch(e=>{ console.error(e); return null; });
+      if(out && shareFileFor===tok) shareFile = new File([out], 'picklemellow_result_'+s.key+'.jpg', {type:'image/jpeg'});
+    })
     .catch(()=>{});
+}
+// ジャケットにスコアとランクを重ねたリザルト画像（1600×900、X のタイムラインで切れない横長）を作る
+async function makeResultImage(blob, r){
+  const url = URL.createObjectURL(blob);
+  const img = await new Promise((ok, ng)=>{ const im = new Image(); im.onload = ()=>ok(im); im.onerror = ng; im.src = url; });
+  URL.revokeObjectURL(url);
+  try{ await Promise.all(['400 40px "Hachi Maru Pop"','400 40px "DotGothic16"','700 40px "Zen Maru Gothic"'].map(f=>document.fonts.load(f))); }catch(e){}
+  const W = 1600, H = 900, cv2 = document.createElement('canvas'); cv2.width = W; cv2.height = H;
+  const c = cv2.getContext('2d');
+  const POP = '"Hachi Maru Pop","Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif';
+  const DOT = '"DotGothic16","Osaka-Mono",ui-monospace,monospace';
+  const UI  = '"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif';
+  const rrect = (x,y,w,h,rad)=>{ c.beginPath(); c.moveTo(x+rad,y); c.arcTo(x+w,y,x+w,y+h,rad); c.arcTo(x+w,y+h,x,y+h,rad); c.arcTo(x,y+h,x,y,rad); c.arcTo(x,y,x+w,y,rad); c.closePath(); };
+  // 背景：ジャケットを小さく縮めてから引き伸ばしてぼかし、暗く沈める（Safari は canvas の filter が使えないため）
+  const sm = document.createElement('canvas'); sm.width = 32; sm.height = 18;
+  const sc2 = sm.getContext('2d'), ia = img.width/img.height;
+  const cw = ia > 16/9 ? img.height*16/9 : img.width, ch = ia > 16/9 ? img.height : img.width*9/16;
+  sc2.drawImage(img, (img.width-cw)/2, (img.height-ch)/2, cw, ch, 0, 0, 32, 18);
+  c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+  c.drawImage(sm, 0, 0, W, H);
+  c.fillStyle = 'rgba(20,10,24,.72)'; c.fillRect(0, 0, W, H);
+  let g = c.createRadialGradient(W*.7, H*.35, 0, W*.7, H*.35, W*.6);
+  g.addColorStop(0, 'rgba(255,61,127,.18)'); g.addColorStop(1, 'rgba(20,10,24,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  // ジャケット
+  const jh = 780, jw = Math.round(jh*ia), jx = 70, jy = (H-jh)/2;
+  c.save(); c.shadowColor = 'rgba(255,61,127,.45)'; c.shadowBlur = 40; c.shadowOffsetY = 12;
+  rrect(jx-8, jy-8, jw+16, jh+16, 36); c.fillStyle = 'rgba(255,156,207,.6)'; c.fill(); c.restore();
+  rrect(jx-4, jy-4, jw+8, jh+8, 32); c.fillStyle = '#fff1f8'; c.fill();
+  c.save(); rrect(jx, jy, jw, jh, 28); c.clip(); c.drawImage(img, jx, jy, jw, jh); c.restore();
+  // 右側の情報
+  const x0 = jx + jw + 80, maxW = W - x0 - 70;
+  const fit = (txt, font, size, min)=>{ let z = size; c.font = font.replace('$', z); while(c.measureText(txt).width > maxW && z > min){ z -= 2; c.font = font.replace('$', z); } return z; };
+  c.textBaseline = 'alphabetic'; c.textAlign = 'left';
+  c.fillStyle = '#ff9ccf'; c.font = '400 34px '+POP; c.fillText('Pickle♡Mellow リズム', x0, 118);
+  c.fillStyle = '#fff1f8'; fit(r.title, '400 $px '+POP, 64, 34); c.fillText(r.title, x0, 205);
+  const dcol = {EASY:'#9ff3dc', NORMAL:'#c9b2ff', EXTRA:'#ff3d7f'}[r.diff] || '#c9b2ff';
+  const dtxt = r.diff+'  Lv.'+r.lv; c.font = '400 34px '+DOT; const dw = c.measureText(dtxt).width + 44;
+  rrect(x0, 236, dw, 56, 28); c.strokeStyle = dcol; c.lineWidth = 3; c.stroke(); c.fillStyle = dcol; c.fillText(dtxt, x0+22, 276);
+  // ランク
+  const isS = r.rank.startsWith('S'), rcol = isS ? '#9ff3dc' : '#ff3d7f';
+  c.save(); c.shadowColor = isS ? 'rgba(159,243,220,.6)' : 'rgba(255,61,127,.6)'; c.shadowBlur = 50;
+  // SSS など横に長いランクでも、右の称号が入る幅を残す
+  let rz = 230; c.font = '400 '+rz+'px '+POP; while(c.measureText(r.rank).width > maxW*.6 && rz > 120){ rz -= 6; c.font = '400 '+rz+'px '+POP; }
+  const rkW = c.measureText(r.rank).width;
+  c.fillStyle = rcol; c.fillText(r.rank, x0-6, 525); c.restore();
+  c.font = '400 30px '+DOT;
+  let by = 410;
+  if(r.badge){ c.fillStyle = '#9ff3dc'; c.fillText(r.badge, x0 + rkW + 30, by); by += 48; }
+  if(r.newBest){ c.fillStyle = '#ff9ccf'; c.fillText('NEW BEST ♡', x0 + rkW + 30, by); }
+  // スコア
+  c.fillStyle = '#fff1f8'; c.save(); c.shadowColor = 'rgba(255,156,207,.6)'; c.shadowBlur = 18;
+  fit(r.score.toLocaleString(), '400 $px '+DOT, 112, 60); c.fillText(r.score.toLocaleString(), x0, 650); c.restore();
+  c.fillStyle = '#ff9ccf'; c.font = '400 26px '+DOT; c.fillText('S C O R E', x0+4, 554);
+  // 判定内訳
+  const items = [['PERFECT', r.p, '#9ff3dc'], ['GREAT', r.g, '#ff9ccf'], ['GOOD', r.o, '#c9b2ff'], ['MISS', r.m, '#9a86a8']];
+  const colW = maxW/4;
+  items.forEach(([k, v, col], i)=>{ const x = x0 + colW*i;
+    c.fillStyle = col; c.font = '400 24px '+DOT; c.fillText(k, x, 720);
+    c.fillStyle = '#fff1f8'; c.font = '400 40px '+DOT; c.fillText(String(v), x, 766); });
+  c.fillStyle = '#9a86a8'; c.font = '400 24px '+DOT; c.fillText('MAX COMBO', x0, 818);
+  c.fillStyle = '#fff1f8'; c.font = '400 30px '+DOT; c.fillText(r.combo+' / '+r.total, x0 + 170, 818);
+  c.textAlign = 'right'; c.fillStyle = 'rgba(255,241,248,.45)'; c.font = '700 20px '+UI;
+  c.fillText('caitakenchikuclub.github.io/ClaudeGame005', W-40, H-28);
+  return await new Promise(ok=>cv2.toBlob(ok, 'image/jpeg', .9));
 }
 // スマホで画像付き共有ができる時は共有メニューを使う（X の投稿リンクには画像を付けられないため）
 function canShareImage(){
