@@ -299,7 +299,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .note{padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.6;color:#e9d9e8;background:var(--glass);border:1px dashed rgba(255,156,207,.45);text-align:center}
 .packs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .pack{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 6px 10px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
-.pack img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-bottom:4px;box-shadow:0 0 0 1px rgba(201,178,255,.35)}
+.pack img{width:100%;max-width:104px;aspect-ratio:1;object-fit:contain;margin-bottom:2px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
 .pack b{font-family:var(--f-dot);font-weight:400;font-size:17px}
 .pack b small{font-family:var(--f-ui);font-size:11px;font-weight:700;margin-left:2px}
 .price{margin-top:4px;width:100%;padding:6px 0;border-radius:12px;font-size:13px;font-weight:700;background:rgba(255,241,248,.08);border:1px solid var(--fog);color:var(--dusk)}
