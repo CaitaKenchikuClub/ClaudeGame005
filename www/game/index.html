@@ -390,6 +390,8 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .msong header{display:flex;align-items:center;justify-content:flex-start;gap:10px;margin:0}
 .msong header i{flex:none;width:34px;height:60px;border-radius:8px;background-size:cover;background-position:center;box-shadow:0 0 0 1px rgba(255,241,248,.6)}
 .msong header b{font-size:14px;line-height:1.3}
+.allBtn{width:100%;margin-bottom:10px;padding:12px}
+.allBtn:disabled{background:rgba(255,241,248,.08);color:var(--dusk);border:1px solid var(--fog)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -563,12 +565,14 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   </div></div>
   <div class="sheet" id="sheetGift" hidden><div class="panel" role="dialog" aria-label="プレゼントボックス">
     <header><h3>プレゼントボックス</h3><button class="close" aria-label="閉じる">×</button></header>
+    <button class="mbtn primary allBtn" id="giftAll"></button>
     <div class="gifts" id="giftList"></div>
   </div></div>
   <div class="sheet" id="sheetMission" hidden><div class="panel" role="dialog" aria-label="ミッション">
     <header><h3>ミッション</h3><button class="close" aria-label="閉じる">×</button></header>
     <div class="mseg" role="tablist"><button role="tab" data-mt="daily">デイリー</button><button role="tab" data-mt="song">楽曲</button></div>
     <p class="mnote" id="missionNote"></p>
+    <button class="mbtn primary allBtn" id="missionAll"></button>
     <div class="mlist" id="missionList"></div>
   </div></div>
   <div class="sheet" id="sheetVol" hidden><div class="panel" role="dialog" aria-label="音量">
@@ -1092,6 +1096,7 @@ function giftsGot(){ const g = store.get('giftsGot', []); return Array.isArray(g
 function renderGifts(){
   const got = giftsGot(), list = $('giftList'), left = GIFTS.filter(g=>!got.includes(g.id));
   $('giftBadge').hidden = !left.length; $('giftBadge').textContent = left.length;
+  $('giftAll').disabled = !left.length; $('giftAll').textContent = left.length ? 'まとめて受け取る（'+left.length+'件）' : '受け取れるプレゼントはありません';
   list.innerHTML = '';
   if(!GIFTS.length){ list.innerHTML = '<div class="empty">プレゼントはありません</div>'; return; }
   [...left, ...GIFTS.filter(g=>got.includes(g.id))].forEach(g=>{
@@ -1108,6 +1113,12 @@ function renderGifts(){
     list.appendChild(d);
   });
 }
+$('giftAll').onclick = ()=>{
+  const left = GIFTS.filter(g=>!giftsGot().includes(g.id)); if(!left.length){ playSE('ui'); return; }
+  store.set('giftsGot', [...giftsGot(), ...left.map(g=>g.id)]);
+  const sum = left.reduce((a,g)=>a+g.souls, 0); addSouls(sum);
+  playSE('tap'); toast('プレゼント'+left.length+'件・魂片を'+sum+'個受け取りました ♡'); renderGifts();
+};
 $('giftBtn').onclick = ()=>{ renderGifts(); openSheet('sheetGift'); };
 renderGifts();
 
@@ -1171,6 +1182,7 @@ function missionRow(r){
 }
 function renderMissions(){
   const n = claimable(); $('missionBadge').hidden = !n; $('missionBadge').textContent = n;
+  $('missionAll').disabled = !n; $('missionAll').textContent = n ? 'まとめて受け取る（'+n+'件）' : '受け取れるミッションはありません';
   if($('sheetMission').hidden) return;
   document.querySelectorAll('.mseg button').forEach(b=>b.setAttribute('aria-selected', b.dataset.mt===missionTab));
   const list = $('missionList'); list.innerHTML = '';
@@ -1190,6 +1202,13 @@ function renderMissions(){
   }
 }
 document.querySelectorAll('.mseg button').forEach(b=>b.onclick = ()=>{ playSE('ui'); missionTab = b.dataset.mt; renderMissions(); $('missionList').parentElement.scrollTop = 0; });
+// デイリー・楽曲の両方で、達成しているものを全部受け取る
+$('missionAll').onclick = ()=>{
+  const rows = [...dailyRows(), ...SONGS.filter(hasSong).flatMap(songRows)].filter(r=>r.ok && !r.got);
+  if(!rows.length){ playSE('ui'); return; }
+  let sum = 0; for(const r of rows){ r.claim(); sum += r.souls; }
+  addSouls(sum); playSE('tap'); toast('ミッション'+rows.length+'件・魂片を'+sum+'個受け取りました ♡'); renderMissions();
+};
 $('missionBtn').onclick = ()=>{ openSheet('sheetMission'); renderMissions(); };
 // 開いている間に日付が変わっても切り替わるように
 setInterval(()=>{ if(state!=='play'){ daily(); renderMissions(); } }, 30000);
