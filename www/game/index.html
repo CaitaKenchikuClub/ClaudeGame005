@@ -852,6 +852,7 @@ document.querySelectorAll('.sheet').forEach(sh=>{
 });
 // お知らせ（新しいものを上に書き足す）
 const NEWS = [
+  {date:'2026.10.31', title:'タップのノーツをなぞっても判定されるように', body:'指を画面に置いたままスライドして、白いタップ（同時押しの金色も）を通過すると判定されます。フリックと長押しは今までどおりです。'},
   {date:'2026.10.31', title:'ミッションができました', body:'ホーム左の書類アイコンから。毎日のデイリーミッションと、曲ごとの楽曲ミッションをクリアすると魂片がもらえます ♡'},
   {date:'2026.10.31', title:'新曲2曲がSHOPに登場！', body:'「ブロッコリー投げ女」「ぽんたは天才だぽん！」を魂片と交換できるようになりました。試聴もできます ♡ 「メロウ・マイ・ディア」もSHOPでの交換になりました（これまで遊んでいた方はそのまま遊べます）。'},
   {date:'2026.10.31', title:'難易度 HARD を追加、EXTRA がさらに難しく', body:'これまでの EXTRA を少しやさしくした HARD を追加しました。EXTRA はノーツと同時押しが増えて手ごたえアップ！これまでの EXTRA のベストスコアは HARD に引き継いでいます。'},
@@ -1347,7 +1348,21 @@ cv.addEventListener('pointermove', e=>{
   const t = performance.now(); p.hist.push({x:p.x,y:p.y,t}); while(p.hist.length>2 && t-p.hist[0].t>90) p.hist.shift();
   const nl = laneAt(p.x); p.lane=nl; laneFlash[nl] = Math.max(laneFlash[nl], .7);
   checkFlicks(p);
+  if(state==='play' && !p.hold && !p.note) slideHit(p);
 },{passive:false});
+// タップのノーツは、指を置いたままなぞって通過しても判定する（フリック・長押しは対象外）。
+// 早すぎる判定にならないよう、ノーツが判定ラインのすぐ手前（PERFECTの幅）に来てから受け付ける
+function slideHit(p){
+  const now = songTime();
+  for(const n of notes){
+    if(n.t - now > W_PERF) break;
+    if(n.k!=='tap' || n.head || n.pending || n.gone || n.l!==p.lane) continue;
+    const dt = now - n.t;
+    if(dt > W_GOOD) continue;
+    n.head = grade(dt) || 'o'; n.gone = true; judge(n.head, n.l); playSE('tap');
+    return;
+  }
+}
 function checkFlicks(p){
   if(p.note && Math.hypot(p.x-p.x0, p.y-p.y0) >= flickThr()){
     const n=p.note; n.head = grade(p.down - n.t) || 'o'; n.pending=null; n.gone=true; p.note=null;
