@@ -1023,7 +1023,7 @@ const THEMES = [
   {key:'blue',   name:'ディープシー・ブルー',   cost:50, sw:'linear-gradient(160deg,#2a5aa0,#0e1b3c 70%)'},
   {key:'black',  name:'ゴシック・ブラック',     cost:50, sw:'linear-gradient(160deg,#3a3940,#0a0a0c 70%)'},
   {key:'pink',   name:'ストロベリー・ピンク',   cost:50, sw:'linear-gradient(160deg,#a03a7c,#36112c 70%)'},
-  {key:'green',  name:'ピクルス・グリーン',     cost:50, sw:'linear-gradient(160deg,#2f8a5a,#112c20 70%)'},
+  {key:'green',  name:'ブロッコリー・グリーン', cost:50, sw:'linear-gradient(160deg,#2f8a5a,#112c20 70%)'},
 ];
 function ownedThemes(){ const o = store.get('themes', []); return ['purple', ...(Array.isArray(o)?o:[])]; }
 function curTheme(){ const t = store.get('theme','purple'); return ownedThemes().includes(t) ? t : 'purple'; }
