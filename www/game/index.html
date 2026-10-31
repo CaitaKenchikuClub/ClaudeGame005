@@ -344,6 +344,14 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .gift .amt{display:block;margin-top:4px;font-family:var(--f-dot);font-size:13px;color:var(--mint)}
 .gift.got{opacity:.5}
 .gifts .empty{padding:30px 0;text-align:center;color:var(--dusk);font-size:13px}
+
+.hshop{width:100%;margin-top:6px;padding:12px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
+.hshopHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.hshopHead b{font-size:14px}
+.hshop .soulPill{padding:2px 10px 2px 3px;font-size:13px}
+.hshop .soulPill img{width:22px;height:22px}
+.hbtns{display:flex;gap:10px}
+.hbtns .buy{flex:1;padding:12px 8px;font-size:14px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -496,7 +504,10 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
       <span class="hrow" id="heartRowBig"></span>
       <p id="heartMsg"></p>
       <p>曲を1回プレイするごとにライフを1個使います。<br>5分ごとに1個、最大6個まで回復します。</p>
-      <button class="mbtn primary" id="heartBuy" style="width:100%">SHOPでライフを回復する</button>
+      <div class="hshop">
+        <div class="hshopHead"><b>魂片で回復</b><span class="soulPill"><img src="img/soul.webp" alt="魂片"><span class="soulNum"></span></span></div>
+        <div class="hbtns"><button class="buy" id="hBuy1"></button><button class="buy" id="hBuyFull"></button></div>
+      </div>
     </div>
   </div></div>
   <div class="sheet" id="sheetTheme" hidden><div class="panel" role="dialog" aria-label="テーマ">
@@ -848,11 +859,11 @@ function renderHearts(){
   if(sheetHeartLack && h.n < 1) msg.innerHTML = '<span class="hlack">ライフが足りません</span><br>'+msg.innerHTML;
 }
 let sheetHeartLack = false;
-function openHeartSheet(lack){ sheetHeartLack = !!lack; renderHearts(); openSheet('sheetHeart'); }
+function openHeartSheet(lack){ sheetHeartLack = !!lack; renderHearts(); renderShop(); renderHeartBuy(); openSheet('sheetHeart'); }
 $('heartPill').onclick = ()=>openHeartSheet(false);
 $('heartBar').onclick = ()=>openHeartSheet(false);
 // プレイ中は判定の邪魔をしないよう更新しない
-setInterval(()=>{ if(state!=='play') renderHearts(); }, 1000);
+setInterval(()=>{ if(state!=='play'){ renderHearts(); if(!$('sheetHeart').hidden) renderHeartBuy(); } }, 1000);
 renderHearts();
 
 /* ---------- 魂片（ゲーム内通貨） ---------- */
@@ -899,12 +910,20 @@ function renderShop(){
   renderThemes();
 }
 function buyLife(k){
-  confirmBuy('ライフを'+k+'個回復します', k, ()=>{ if(spendSouls(k)){ addHearts(k); playSE('tap'); toast('ライフが'+k+'個回復しました ♡'); renderShop(); } });
+  confirmBuy('ライフを'+k+'個回復します', k, ()=>{ if(spendSouls(k)){ addHearts(k); playSE('tap'); toast('ライフが'+k+'個回復しました ♡'); renderShop(); renderHeartBuy(); } });
 }
 $('buyLife1').onclick = ()=>{ playSE('ui'); buyLife(1); };
 $('buyLifeFull').onclick = ()=>{ playSE('ui'); buyLife(Math.max(0, HEART_MAX - heartState().n)); };
 $('soulPillTop').onclick = ()=>{ playSE('ui'); openShop('soul'); };
-$('heartBuy').onclick = ()=>{ playSE('ui'); closeSheet($('sheetHeart')); if(state==='detail' || state==='result'){ toast('ホームの SHOP からライフを回復できます'); return; } openShop('life'); };
+// ライフのパネルからその場で回復できる（どの画面からでも）
+function renderHeartBuy(){
+  const lack = Math.max(0, HEART_MAX - heartState().n), sic = '<img class="soulIc" src="img/soul.webp" alt="">';
+  $('hBuy1').innerHTML = lack ? '1個回復　'+sic+'1' : '満タンです'; $('hBuy1').disabled = !lack;
+  $('hBuyFull').innerHTML = lack ? '満タンまで　'+sic+lack : '満タンです'; $('hBuyFull').disabled = !lack;
+  $('hBuyFull').hidden = lack <= 1;
+}
+$('hBuy1').onclick = ()=>{ playSE('ui'); buyLife(1); };
+$('hBuyFull').onclick = ()=>{ playSE('ui'); buyLife(Math.max(0, HEART_MAX - heartState().n)); };
 
 /* ---------- テーマ（背景） ---------- */
 const THEMES = [
