@@ -1130,22 +1130,22 @@ renderGifts();
 /* ---------- ミッション ---------- */
 // デイリーは端末の時計で毎日 0:00 に切り替わる。○回プレイは曲・難易度を問わず、曲を最後まで遊んだ回数
 const DAILY = [
-  {id:'login', title:'ログインする',     need:1, souls:100, val:d=>1},
-  {id:'play1', title:'1曲プレイする',    need:1, souls:100, val:d=>d.plays},
-  {id:'play3', title:'3回プレイする',    need:3, souls:100, val:d=>d.plays},
-  {id:'play5', title:'5回プレイする',    need:5, souls:100, val:d=>d.plays},
+  {id:'login', title:'ログインする',     need:1, souls:10, val:d=>1},
+  {id:'play1', title:'1曲プレイする',    need:1, souls:10, val:d=>d.plays},
+  {id:'play3', title:'3回プレイする',    need:3, souls:10, val:d=>d.plays},
+  {id:'play5', title:'5回プレイする',    need:5, souls:10, val:d=>d.plays},
 ];
-const DAILY_BONUS = {id:'all', title:'デイリーミッションをすべて達成', souls:500};
+const DAILY_BONUS = {id:'all', title:'デイリーミッションをすべて達成', souls:300};
 // 楽曲ミッション（持っている曲ごと・1回だけ）
 const SONG_MISSIONS = [
-  {id:'play',  title:'この曲をプレイする',          souls:500,  ok:x=>store.get('plays.'+x.id, 0) >= 1},
-  {id:'eFC',   title:'EASY でフルコンボ',           souls:500,  ok:x=>!!store.get('fc.'+x.id+'.easy', false)},
-  {id:'nA',    title:'NORMAL で Aランク以上',       souls:500,  ok:x=>store.get('best.'+x.id+'.normal', 0) >= 900000},
-  {id:'hA',    title:'HARD で Aランク以上',         souls:500,  ok:x=>store.get('best.'+x.id+'.hard', 0) >= 900000},
-  {id:'x800',  title:'EXTRA で 800,000 スコア以上', souls:500,  ok:x=>store.get('best.'+x.id+'.extra', 0) >= 800000},
-  {id:'share', title:'この曲の結果を共有する',      souls:500,  ok:x=>!!store.get('shared.'+x.id, false)},
-  {id:'hFC',   title:'HARD でフルコンボ',           souls:1000, ok:x=>!!store.get('fc.'+x.id+'.hard', false)},
-  {id:'xFC',   title:'EXTRA でフルコンボ',          souls:1000, ok:x=>!!store.get('fc.'+x.id+'.extra', false)},
+  {id:'play',  title:'この曲をプレイする',          souls:300,  ok:x=>store.get('plays.'+x.id, 0) >= 1},
+  {id:'eFC',   title:'EASY でフルコンボ',           souls:300,  ok:x=>!!store.get('fc.'+x.id+'.easy', false)},
+  {id:'nA',    title:'NORMAL で Aランク以上',       souls:300,  ok:x=>store.get('best.'+x.id+'.normal', 0) >= 900000},
+  {id:'hA',    title:'HARD で Aランク以上',         souls:300,  ok:x=>store.get('best.'+x.id+'.hard', 0) >= 900000},
+  {id:'x800',  title:'EXTRA で 800,000 スコア以上', souls:300,  ok:x=>store.get('best.'+x.id+'.extra', 0) >= 800000},
+  {id:'share', title:'この曲の結果を共有する',      souls:300,  ok:x=>!!store.get('shared.'+x.id, false)},
+  {id:'hFC',   title:'HARD でフルコンボ',           souls:500, ok:x=>!!store.get('fc.'+x.id+'.hard', false)},
+  {id:'xFC',   title:'EXTRA でフルコンボ',          souls:500, ok:x=>!!store.get('fc.'+x.id+'.extra', false)},
 ];
 function today(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function daily(){
