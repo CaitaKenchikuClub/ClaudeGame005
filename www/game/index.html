@@ -192,7 +192,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .topHead b{font-family:var(--f-pop);font-weight:400;font-size:22px;color:var(--milk);text-shadow:0 0 12px rgba(255,156,207,.8)}
 .topHead small{font-family:var(--f-dot);font-size:10px;letter-spacing:.35em;color:var(--pink)}
 /* 吹き出しの場所（2行ぶん）をキャラの上に確保して、顔に重ならないようにする */
-#top{--talkTop:calc(max(12px,env(safe-area-inset-top,0px)) + 54px);--talkH:84px}
+#top{--talkTop:calc(max(12px,env(safe-area-inset-top,0px)) + 120px);--talkH:80px}
 #chara{position:absolute;left:0;right:64px;top:calc(var(--talkTop) + var(--talkH) + 14px);bottom:0;display:flex;justify-content:center;align-items:flex-end;padding:0}
 #charaImg{height:100%;max-width:100%;object-fit:contain;object-position:bottom;transform-origin:50% 100%;
   filter:drop-shadow(0 0 18px rgba(201,178,255,.45)) drop-shadow(0 12px 30px rgba(255,61,127,.25));animation:standIn .6s cubic-bezier(.2,1.4,.4,1) both, sway 5s ease-in-out .6s infinite}
@@ -298,8 +298,8 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .cat{display:grid;gap:12px;align-content:start}
 .note{padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.6;color:#e9d9e8;background:var(--glass);border:1px dashed rgba(255,156,207,.45);text-align:center}
 .packs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.pack{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 10px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
-.pack img{width:100%;max-width:96px;aspect-ratio:1;object-fit:contain}
+.pack{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 6px 10px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
+.pack img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-bottom:4px;box-shadow:0 0 0 1px rgba(201,178,255,.35)}
 .pack b{font-family:var(--f-dot);font-weight:400;font-size:17px}
 .pack b small{font-family:var(--f-ui);font-size:11px;font-weight:700;margin-left:2px}
 .price{margin-top:4px;width:100%;padding:6px 0;border-radius:12px;font-size:13px;font-weight:700;background:rgba(255,241,248,.08);border:1px solid var(--fog);color:var(--dusk)}
@@ -325,6 +325,20 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .cbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px;text-align:center}
 .cbox p{margin:0;font-size:14px;line-height:1.7}
 .cbox .cbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+
+/* ---------- プレゼントボックス ---------- */
+.giftBtn{position:relative;margin-top:6px;align-self:flex-start;display:flex;align-items:center;gap:6px;padding:5px 12px 5px 8px;border-radius:999px;
+  background:var(--glass);border:1px solid rgba(255,156,207,.5);font-size:12px;font-weight:700;color:var(--milk);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.giftBtn svg{width:18px;height:18px;color:var(--pink)}
+.giftBtn .badge{position:absolute;top:-8px;right:-14px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--blood);color:#fff;font-size:11px;line-height:18px;text-align:center;font-family:var(--f-dot);box-shadow:0 0 0 2px var(--night),0 0 8px var(--blood)}
+.gifts{display:grid;gap:10px}
+.gift{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
+.gift > img{width:52px;height:52px;border-radius:12px;object-fit:cover}
+.gift b{display:block;font-size:14px}
+.gift small{display:block;margin-top:3px;font-size:12px;color:#e9d9e8;line-height:1.5}
+.gift .amt{display:block;margin-top:4px;font-family:var(--f-dot);font-size:13px;color:var(--mint)}
+.gift.got{opacity:.5}
+.gifts .empty{padding:30px 0;text-align:center;color:var(--dusk);font-size:13px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -358,7 +372,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
   <section id="top" class="screen" hidden aria-label="ホーム">
     <div class="floaty" id="floatyTop"></div>
-    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button></div>
+    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button><button class="giftBtn" id="giftBtn" aria-label="プレゼントボックス"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6C10.5 3 7 3 7 5s3 1 5 1zM12 6c1.5-3 5-3 5-1s-3 1-5 1z"/></svg>プレゼント<span class="badge" id="giftBadge" hidden></span></button></div>
     <button id="chara" aria-label="話しかける"><img id="charaImg" alt=""></button>
     <div class="talk" id="talk" hidden aria-live="polite"><p id="talkText"></p></div>
     <div class="myName"><small>MY PARTNER</small><b id="charaName"></b></div>
@@ -487,6 +501,10 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   <div class="sheet" id="sheetConfirm" hidden><div class="panel" role="dialog" aria-label="購入の確認">
     <header><h3>購入の確認</h3><button class="close" aria-label="閉じる">×</button></header>
     <div class="cbox"><p id="confirmText"></p><div class="cbtns"><button class="mbtn" id="confirmNo">やめる</button><button class="mbtn primary" id="confirmYes">購入する</button></div></div>
+  </div></div>
+  <div class="sheet" id="sheetGift" hidden><div class="panel" role="dialog" aria-label="プレゼントボックス">
+    <header><h3>プレゼントボックス</h3><button class="close" aria-label="閉じる">×</button></header>
+    <div class="gifts" id="giftList"></div>
   </div></div>
   <div class="sheet" id="sheetVol" hidden><div class="panel" role="dialog" aria-label="音量">
     <header><h3>音量</h3><button class="close" aria-label="閉じる">×</button></header>
@@ -741,6 +759,7 @@ document.querySelectorAll('.sheet').forEach(sh=>{
 });
 // お知らせ（新しいものを上に書き足す）
 const NEWS = [
+  {date:'2026.10.31', title:'SHOPとプレゼントボックスができました', body:'魂片でライフの回復や背景テーマの購入ができます。プレゼントボックスに、はじめましてプレゼント（魂片100個）が届いています ♡'},
   {date:'2026.10.30', title:'ホーム画面ができました！', body:'お気に入りの子をホームに呼んで、お喋りできるようになりました。右の「キャラ変更」から選んでね。'},
   {date:'2026.10.30', title:'リザルトをXでシェア', body:'リザルト画面の「スコアをポストする」から、ジャケット入りのリザルト画像つきでポストできます。'},
   {date:'2026.10.17', title:'Pickle♡Mellow リズム 公開', body:'7曲・3難易度で遊べます。イヤホン推奨です ♡'},
@@ -911,6 +930,34 @@ function renderThemes(){
 }
 $('btnTheme').onclick = ()=>{ renderThemes(); openSheet('sheetTheme'); };
 applyTheme(); renderShop();
+
+/* ---------- プレゼントボックス ---------- */
+// プレゼントはここに書き足す（id は一度決めたら変えない。受け取り済みかどうかの記録に使う）
+const GIFTS = [
+  {id:'welcome-2026-10', title:'はじめましてプレゼント', body:'Pickle♡Mellow リズムへようこそ！SHOPで使ってね ♡', souls:100},
+];
+function giftsGot(){ const g = store.get('giftsGot', []); return Array.isArray(g) ? g : []; }
+function renderGifts(){
+  const got = giftsGot(), list = $('giftList'), left = GIFTS.filter(g=>!got.includes(g.id));
+  $('giftBadge').hidden = !left.length; $('giftBadge').textContent = left.length;
+  list.innerHTML = '';
+  if(!GIFTS.length){ list.innerHTML = '<div class="empty">プレゼントはありません</div>'; return; }
+  [...left, ...GIFTS.filter(g=>got.includes(g.id))].forEach(g=>{
+    const done = got.includes(g.id), d = document.createElement('div'); d.className = 'gift'+(done?' got':'');
+    d.innerHTML = '<img src="img/soul_6.webp" alt=""><span><b></b><small></small><span class="amt"></span></span><button class="buy"></button>';
+    d.querySelector('b').textContent = g.title; d.querySelector('small').textContent = g.body;
+    d.querySelector('.amt').innerHTML = '<img class="soulIc" src="img/soul.webp" alt="">魂片 ×'+g.souls;
+    const b = d.querySelector('button'); b.textContent = done ? '受け取り済み' : '受け取る'; b.disabled = done;
+    b.onclick = ()=>{
+      if(giftsGot().includes(g.id)) return;
+      store.set('giftsGot', [...giftsGot(), g.id]); addSouls(g.souls);
+      playSE('tap'); toast('魂片を'+g.souls+'個受け取りました ♡'); renderGifts();
+    };
+    list.appendChild(d);
+  });
+}
+$('giftBtn').onclick = ()=>{ renderGifts(); openSheet('sheetGift'); };
+renderGifts();
 
 /* ---------- リンク ---------- */
 LINK_ORDER.map(k=>STANDS.find(s=>s.key===k)).forEach(s=>{
