@@ -48,9 +48,9 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
 /* ---------- home ---------- */
 #home{padding:0;overflow:hidden;background:
-  radial-gradient(90% 55% at 50% 38%,rgba(201,178,255,.30),transparent 70%),
-  radial-gradient(70% 40% at 20% 100%,rgba(255,61,127,.22),transparent 70%),
-  linear-gradient(180deg,#2a1636 0%,#1b0e24 55%,#120814 100%)}
+  radial-gradient(90% 55% at 50% 38%,var(--glowA),transparent 70%),
+  radial-gradient(70% 40% at 20% 100%,var(--glowB),transparent 70%),
+  var(--bgGrad)}
 .floaty{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .floaty span{position:absolute;bottom:-40px;color:var(--pink);opacity:.0;font-size:18px;animation:rise linear infinite}
 @keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.5}90%{opacity:.35}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
@@ -60,7 +60,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 @keyframes standIn{from{opacity:0;transform:translateY(24px) scale(.96)}}
 @keyframes sway{50%{transform:translateY(-6px)}}
 .nameTag{position:absolute;left:max(16px,env(safe-area-inset-left,0px));bottom:14px;z-index:3;display:flex;flex-direction:column;gap:2px;
-  padding:8px 12px 8px 10px;background:rgba(20,10,24,.66);border:1px solid rgba(255,156,207,.5);border-radius:14px 14px 14px 2px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  padding:8px 12px 8px 10px;background:var(--glass);border:1px solid rgba(255,156,207,.5);border-radius:14px 14px 14px 2px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .nameTag small{font-family:var(--f-dot);font-size:10px;color:var(--pink);letter-spacing:.2em}
 .nameTag b{font-family:var(--f-pop);font-weight:400;font-size:17px}
 .bubble{position:absolute;top:max(6px,env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));z-index:4;transform-origin:20% 100%;
@@ -73,12 +73,12 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .bubble .glitch{display:inline-block}
 @keyframes pop{from{opacity:0;transform:scale(.6)}}
 .np{position:absolute;top:max(10px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:5;display:flex;align-items:center;gap:6px;max-width:44%;
-  padding:6px 11px;border-radius:999px;background:rgba(20,10,24,.66);border:1px solid rgba(255,156,207,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);font-size:11px;font-weight:700}
+  padding:6px 11px;border-radius:999px;background:var(--glass);border:1px solid rgba(255,156,207,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);font-size:11px;font-weight:700}
 .np span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .np i{font-style:normal;color:var(--pink);animation:bob 1.1s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-3px)}}
 .shelf{position:relative;z-index:4;padding-block:12px 14px;
-  background:linear-gradient(180deg,rgba(18,8,20,0),rgba(18,8,20,.86) 22%,rgba(18,8,20,.96));
+  background:linear-gradient(180deg,transparent,var(--shelf) 22%,var(--shelf));
   border-top:1px dashed rgba(255,156,207,.35)}
 .shelfHead{display:flex;justify-content:space-between;align-items:baseline;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));margin-bottom:8px}
 .shelfHead b{font-family:var(--f-pop);font-weight:400;font-size:15px;color:var(--pink)}
@@ -89,7 +89,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .card:active{transform:scale(.95)}
 .jk{position:relative;width:112px;aspect-ratio:9/16;border-radius:14px;background-size:cover;background-position:center;
   box-shadow:0 0 0 2px rgba(255,241,248,.85),0 0 0 4px rgba(255,156,207,.55),0 8px 18px rgba(0,0,0,.55);overflow:hidden}
-.jk .no{position:absolute;left:6px;top:6px;font-family:var(--f-dot);font-size:10px;padding:1px 6px;border-radius:8px;background:rgba(20,10,24,.7);color:var(--mint)}
+.jk .no{position:absolute;left:6px;top:6px;font-family:var(--f-dot);font-size:10px;padding:1px 6px;border-radius:8px;background:var(--glass);color:var(--mint)}
 .jk .ov{position:absolute;inset:auto 0 0;padding:20px 6px 8px;font-family:var(--f-pop);font-size:13px;line-height:1.2;text-align:center;color:#ffd0e4;
   background:linear-gradient(transparent,rgba(10,0,8,.85));text-shadow:0 0 6px var(--blood)}
 .card.secret .jk{box-shadow:0 0 0 2px rgba(255,61,127,.9),0 0 18px rgba(255,61,127,.5),0 8px 18px rgba(0,0,0,.55)}
@@ -172,10 +172,10 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
 /* ---------- tabs (ホーム / 曲選択 / 楽曲購入 / リンク) ---------- */
 :root{--tabH:calc(62px + env(safe-area-inset-bottom,0px))}
-#top,#home,#links{bottom:var(--tabH)}
+#top,#home,#links,#shop{bottom:var(--tabH)}
 #tabbar{position:absolute;left:0;right:0;bottom:0;z-index:30;height:var(--tabH);display:grid;grid-template-columns:repeat(4,1fr);
   padding:0 max(6px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(6px,env(safe-area-inset-left,0px));
-  background:rgba(18,8,22,.94);border-top:1px solid rgba(255,156,207,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  background:var(--tabBg);border-top:1px solid rgba(255,156,207,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dusk);font-size:10px;font-weight:700;letter-spacing:.04em}
 .tab svg{width:24px;height:24px}
 .tab[aria-selected=true]{color:var(--pink)}
@@ -185,9 +185,9 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
 /* ---------- ホーム ---------- */
 #top{padding:0;overflow:hidden;background:
-  radial-gradient(80% 50% at 50% 45%,rgba(201,178,255,.32),transparent 70%),
-  radial-gradient(70% 40% at 80% 100%,rgba(255,61,127,.2),transparent 70%),
-  linear-gradient(180deg,#2a1636 0%,#1b0e24 60%,#120814 100%)}
+  radial-gradient(80% 50% at 50% 45%,var(--glowA),transparent 70%),
+  radial-gradient(70% 40% at 80% 100%,var(--glowB),transparent 70%),
+  var(--bgGrad)}
 .topHead{position:absolute;z-index:4;top:max(12px,env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:0}
 .topHead b{font-family:var(--f-pop);font-weight:400;font-size:22px;color:var(--milk);text-shadow:0 0 12px rgba(255,156,207,.8)}
 .topHead small{font-family:var(--f-dot);font-size:10px;letter-spacing:.35em;color:var(--pink)}
@@ -204,12 +204,12 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .talk p::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-6px;width:12px;height:12px;background:var(--milk);transform:rotate(45deg);box-shadow:2px 2px 0 0 var(--pink)}
 .talk.out p{transition:opacity .35s,transform .35s;opacity:0;transform:translateY(-6px)}
 .myName{position:absolute;z-index:4;left:max(16px,env(safe-area-inset-left,0px));bottom:14px;display:flex;flex-direction:column;gap:2px;padding:8px 12px 8px 10px;
-  background:rgba(20,10,24,.66);border:1px solid rgba(255,156,207,.5);border-radius:14px 14px 14px 2px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  background:var(--glass);border:1px solid rgba(255,156,207,.5);border-radius:14px 14px 14px 2px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .myName small{font-family:var(--f-dot);font-size:10px;color:var(--pink);letter-spacing:.2em}
 .myName b{font-family:var(--f-pop);font-weight:400;font-size:16px}
 .side{position:absolute;z-index:5;top:calc(max(12px,env(safe-area-inset-top,0px)) + 52px);right:max(12px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
 .side button{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--milk)}
-.side button span.ic{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:rgba(20,10,24,.66);border:1px solid rgba(255,156,207,.5);
+.side button span.ic{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:var(--glass);border:1px solid rgba(255,156,207,.5);
   box-shadow:0 6px 16px rgba(0,0,0,.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .side svg{width:24px;height:24px;color:var(--pink)}
 .side button:active span.ic{transform:scale(.92)}
@@ -218,7 +218,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 /* ---------- パネル（お知らせ・キャラ変更・音量） ---------- */
 .sheet{position:absolute;inset:0;z-index:45;display:flex;align-items:flex-end;background:rgba(10,4,14,.62);animation:fadeIn .2s both}
 @keyframes fadeIn{from{opacity:0}}
-.panel{width:100%;max-height:80%;overflow-y:auto;background:linear-gradient(180deg,#2c1838,#1d0f26);border-radius:24px 24px 0 0;border-top:1px solid rgba(255,156,207,.45);
+.panel{width:100%;max-height:80%;overflow-y:auto;background:var(--sheetBg);border-radius:24px 24px 0 0;border-top:1px solid rgba(255,156,207,.45);
   padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));animation:up .28s cubic-bezier(.2,1,.3,1) both}
 @keyframes up{from{transform:translateY(40px);opacity:0}}
 .panel header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -239,7 +239,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .vol input{width:100%;accent-color:var(--pink);height:28px}
 
 /* ---------- リンク ---------- */
-#links{gap:14px;overflow-y:auto;background:linear-gradient(180deg,#2a1636 0%,#1b0e24 60%,#120814 100%);padding-top:max(16px,env(safe-area-inset-top,0px))}
+#links{gap:14px;overflow-y:auto;background:var(--bgGrad);padding-top:max(16px,env(safe-area-inset-top,0px))}
 .pageHead b{display:block;font-family:var(--f-pop);font-weight:400;font-size:24px;color:var(--milk)}
 .pageHead small{font-size:12px;color:var(--dusk)}
 .linkList{display:grid;gap:10px}
@@ -252,7 +252,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .linkList i{font-style:normal;color:var(--pink);font-size:18px}
 
 /* ---------- ハート（プレイに使う） ---------- */
-.hpill{display:flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:999px;background:rgba(20,10,24,.7);border:1px solid rgba(255,156,207,.5);
+.hpill{display:flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:999px;background:var(--glass);border:1px solid rgba(255,156,207,.5);
   font-family:var(--f-dot);font-size:13px;color:var(--milk);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .hpill svg{width:18px;height:18px;fill:var(--blood);filter:drop-shadow(0 0 4px rgba(255,61,127,.7))}
 .hpill small{font-size:11px;color:var(--dusk)}
@@ -270,6 +270,61 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .hbig p b{font-family:var(--f-dot);font-weight:400;color:var(--milk);font-size:15px}
 .hbuy{width:100%;margin-top:6px;padding:14px;border-radius:18px;font-weight:700;font-size:15px;background:rgba(36,18,47,.9);border:1px dashed rgba(255,156,207,.5);color:var(--dusk)}
 .hlack{color:var(--blood)!important;font-weight:700}
+
+/* ---------- テーマ（背景購入で増える） ---------- */
+#app{--bgGrad:linear-gradient(180deg,#2a1636 0%,#1b0e24 58%,#120814 100%);--glowA:rgba(201,178,255,.32);--glowB:rgba(255,61,127,.21);
+  --tabBg:rgba(18,8,22,.94);--sheetBg:linear-gradient(180deg,#2c1838,#1d0f26);--glass:rgba(20,10,24,.66);--shelf:rgba(18,8,20,.92);--night:#140a18}
+#app[data-theme=blue]{--bgGrad:linear-gradient(180deg,#16305e 0%,#0e1b3c 58%,#070d20 100%);--glowA:rgba(140,205,255,.34);--glowB:rgba(90,150,255,.24);
+  --tabBg:rgba(6,14,32,.94);--sheetBg:linear-gradient(180deg,#183262,#0c1836);--glass:rgba(8,18,40,.68);--shelf:rgba(6,14,32,.92);--night:#081128}
+#app[data-theme=black]{--bgGrad:linear-gradient(180deg,#24232a 0%,#141317 58%,#060607 100%);--glowA:rgba(255,255,255,.13);--glowB:rgba(255,61,127,.15);
+  --tabBg:rgba(8,8,10,.95);--sheetBg:linear-gradient(180deg,#26252b,#131215);--glass:rgba(10,10,12,.72);--shelf:rgba(8,8,10,.93);--night:#0a0a0c}
+#app[data-theme=pink]{--bgGrad:linear-gradient(180deg,#5a1f47 0%,#36112c 58%,#1c0817 100%);--glowA:rgba(255,190,226,.38);--glowB:rgba(255,61,127,.32);
+  --tabBg:rgba(34,8,26,.94);--sheetBg:linear-gradient(180deg,#58204a,#2c0d24);--glass:rgba(40,10,30,.66);--shelf:rgba(34,8,26,.92);--night:#1e0919}
+
+/* ---------- 魂片（ゲーム内通貨） ---------- */
+.soulPill{display:flex;align-items:center;gap:4px;padding:3px 12px 3px 4px;border-radius:999px;background:var(--glass);border:1px solid rgba(201,178,255,.55);
+  font-family:var(--f-dot);font-size:14px;color:var(--milk);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.soulPill img,.soulIc{width:26px;height:26px;object-fit:contain;filter:drop-shadow(0 0 5px rgba(150,170,255,.7))}
+.soulIc{width:18px;height:18px;vertical-align:-4px;margin-right:1px}
+#top .soulPill{position:absolute;z-index:5;top:max(12px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px))}
+
+/* ---------- SHOP ---------- */
+#shop{gap:12px;overflow-y:auto;background:var(--bgGrad);padding-top:max(16px,env(safe-area-inset-top,0px))}
+.shopHead{display:flex;justify-content:space-between;align-items:center}
+.shopHead b{font-family:var(--f-pop);font-weight:400;font-size:24px}
+.seg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:4px;border-radius:16px;background:var(--glass);border:1px solid var(--fog)}
+.seg button{padding:9px 0;border-radius:12px;font-size:12px;font-weight:700;color:var(--dusk);white-space:nowrap}
+.seg button[aria-selected=true]{background:linear-gradient(90deg,var(--pink),var(--lilac));color:#3b1043}
+.cat{display:grid;gap:12px;align-content:start}
+.note{padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.6;color:#e9d9e8;background:var(--glass);border:1px dashed rgba(255,156,207,.45);text-align:center}
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pack{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 10px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
+.pack img{width:100%;max-width:96px;aspect-ratio:1;object-fit:contain}
+.pack b{font-family:var(--f-dot);font-weight:400;font-size:17px}
+.pack b small{font-family:var(--f-ui);font-size:11px;font-weight:700;margin-left:2px}
+.price{margin-top:4px;width:100%;padding:6px 0;border-radius:12px;font-size:13px;font-weight:700;background:rgba(255,241,248,.08);border:1px solid var(--fog);color:var(--dusk)}
+.item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4)}
+.item .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,241,248,.06)}
+.item .ico svg{width:30px;height:30px;fill:var(--blood);filter:drop-shadow(0 0 5px rgba(255,61,127,.6))}
+.item b{display:block;font-size:14px}
+.item small{display:block;font-size:11px;color:var(--dusk);margin-top:2px}
+.buy{padding:9px 14px;border-radius:14px;font-weight:700;font-size:13px;white-space:nowrap;background:linear-gradient(90deg,var(--pink),var(--lilac));color:#3b1043}
+.buy:disabled{background:rgba(255,241,248,.08);color:var(--dusk);border:1px solid var(--fog)}
+.buy.own{background:none;border:1px solid var(--mint);color:var(--mint)}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.theme{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4);text-align:left}
+.theme .sw{height:84px;border-radius:12px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,241,248,.18)}
+.theme .sw::after{content:"♡";position:absolute;right:10px;bottom:6px;font-size:22px;color:rgba(255,241,248,.6)}
+.theme b{font-size:13px}
+.theme[aria-pressed=true]{border-color:var(--pink);box-shadow:0 0 0 1px var(--pink),0 0 16px rgba(255,156,207,.4)}
+.theme .tag{font-size:11px;font-weight:700;color:var(--dusk)}
+.theme .tag.use{color:var(--mint)}
+.theme .lock{opacity:.55}
+.soon2{display:grid;place-items:center;gap:8px;padding:40px 10px;text-align:center;color:var(--dusk);font-size:13px}
+.soon2 b{font-family:var(--f-pop);font-weight:400;font-size:22px;color:var(--milk)}
+.cbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:6px 0 4px;text-align:center}
+.cbox p{margin:0;font-size:14px;line-height:1.7}
+.cbox .cbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -303,13 +358,15 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
   <section id="top" class="screen" hidden aria-label="ホーム">
     <div class="floaty" id="floatyTop"></div>
-    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small><button class="hpill" id="heartPill" aria-label="ハート"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button></div>
+    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button></div>
     <button id="chara" aria-label="話しかける"><img id="charaImg" alt=""></button>
     <div class="talk" id="talk" hidden aria-live="polite"><p id="talkText"></p></div>
     <div class="myName"><small>MY PARTNER</small><b id="charaName"></b></div>
+    <button class="soulPill" id="soulPillTop" aria-label="魂片（SHOPへ）"><img src="img/soul.webp" alt="魂片"><span class="soulNum"></span></button>
     <nav class="side" aria-label="ホームのメニュー">
       <button id="btnNews"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span>お知らせ<i class="dot" id="newsDot" hidden></i></button>
       <button id="btnChara"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 4.5h4v4"/><path d="M21 4.5 16.5 9"/></svg></span>キャラ変更</button>
+      <button id="btnTheme"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2 0-1.5-1.5-1.7-1.5-3s1-2 2.5-2H18a3 3 0 0 0 3-3c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7" r="1.2" fill="currentColor"/></svg></span>テーマ</button>
       <button id="btnVol"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg></span>音量</button>
     </nav>
   </section>
@@ -319,8 +376,30 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
     <div class="linkList" id="linkList"></div>
   </section>
 
+  <section id="shop" class="screen" hidden aria-label="SHOP">
+    <div class="shopHead"><b>SHOP</b><span class="soulPill"><img src="img/soul.webp" alt="魂片"><span class="soulNum"></span></span></div>
+    <div class="seg" role="tablist" aria-label="SHOPのカテゴリ">
+      <button role="tab" data-cat="soul">魂片</button><button role="tab" data-cat="life">ライフ</button><button role="tab" data-cat="song">楽曲</button><button role="tab" data-cat="bg">背景</button><button role="tab" data-cat="skin">スキン</button>
+    </div>
+    <div class="cat" id="cat-soul">
+      <div class="note">魂片の購入は準備中です。もうしばらくお待ちください ♡</div>
+      <div class="packs" id="packList"></div>
+    </div>
+    <div class="cat" id="cat-life" hidden>
+      <div class="note">ライフ1個を<img class="soulIc" src="img/soul.webp" alt="">1魂片で回復できます。いま <b id="lifeNow"></b></div>
+      <div class="item"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg></span><span><b>ライフを1個回復</b><small>最大6個まで</small></span><button class="buy" id="buyLife1"></button></div>
+      <div class="item"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg></span><span><b>ライフを満タンまで回復</b><small id="lifeFullSub"></small></span><button class="buy" id="buyLifeFull"></button></div>
+    </div>
+    <div class="cat" id="cat-song" hidden><div class="soon2"><b>Coming soon ♡</b>新しい楽曲は準備中です</div></div>
+    <div class="cat" id="cat-bg" hidden>
+      <div class="note">買ったテーマは、ホームの「テーマ」からいつでも切り替えられます</div>
+      <div class="themes" id="themeShop"></div>
+    </div>
+    <div class="cat" id="cat-skin" hidden><div class="soon2"><b>Coming soon ♡</b>スキンは準備中です</div></div>
+  </section>
+
   <section id="detail" class="screen" hidden aria-label="難易度選択">
-    <div class="topbar"><button class="back" id="backBtn">‹ もどる</button><small id="dNo"></small><button class="hpill" id="heartBar" aria-label="ハート"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartBarNum"></span><small id="heartBarTime"></small></button></div>
+    <div class="topbar"><button class="back" id="backBtn">‹ もどる</button><small id="dNo"></small><button class="hpill" id="heartBar" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartBarNum"></span><small id="heartBarTime"></small></button></div>
     <div class="hero">
       <div class="jk" id="dJacket"></div>
       <div style="min-width:0">
@@ -380,7 +459,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   <nav id="tabbar" hidden role="tablist" aria-label="メニュー">
     <button class="tab" role="tab" data-tab="top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg>ホーム</button>
     <button class="tab" role="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>曲選択</button>
-    <button class="tab" role="tab" data-tab="shop" aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>楽曲購入<span class="soon">準備中</span></button>
+    <button class="tab" role="tab" data-tab="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>SHOP</button>
     <button class="tab" role="tab" data-tab="links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>リンク</button>
   </nav>
 
@@ -392,14 +471,22 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
     <header><h3>キャラクター変更</h3><button class="close" aria-label="閉じる">×</button></header>
     <div class="charas" id="charaList"></div>
   </div></div>
-  <div class="sheet" id="sheetHeart" hidden><div class="panel" role="dialog" aria-label="ハート">
-    <header><h3>ハート</h3><button class="close" aria-label="閉じる">×</button></header>
+  <div class="sheet" id="sheetHeart" hidden><div class="panel" role="dialog" aria-label="ライフ">
+    <header><h3>ライフ</h3><button class="close" aria-label="閉じる">×</button></header>
     <div class="hbig">
       <span class="hrow" id="heartRowBig"></span>
       <p id="heartMsg"></p>
-      <p>曲を1回プレイするごとにハートを1個使います。<br>5分ごとに1個、最大6個まで回復します。</p>
-      <button class="hbuy" id="heartBuy" disabled>ハートを回復する（準備中）</button>
+      <p>曲を1回プレイするごとにライフを1個使います。<br>5分ごとに1個、最大6個まで回復します。</p>
+      <button class="mbtn primary" id="heartBuy" style="width:100%">SHOPでライフを回復する</button>
     </div>
+  </div></div>
+  <div class="sheet" id="sheetTheme" hidden><div class="panel" role="dialog" aria-label="テーマ">
+    <header><h3>テーマ</h3><button class="close" aria-label="閉じる">×</button></header>
+    <div class="themes" id="themeList"></div>
+  </div></div>
+  <div class="sheet" id="sheetConfirm" hidden><div class="panel" role="dialog" aria-label="購入の確認">
+    <header><h3>購入の確認</h3><button class="close" aria-label="閉じる">×</button></header>
+    <div class="cbox"><p id="confirmText"></p><div class="cbtns"><button class="mbtn" id="confirmNo">やめる</button><button class="mbtn primary" id="confirmYes">購入する</button></div></div>
   </div></div>
   <div class="sheet" id="sheetVol" hidden><div class="panel" role="dialog" aria-label="音量">
     <header><h3>音量</h3><button class="close" aria-label="閉じる">×</button></header>
@@ -484,9 +571,9 @@ function onReady(){ ready = true; $('tapStart').textContent = 'TAP TO START'; $(
 /* ---------- screens ---------- */
 let state = 'load';
 // タブで行き来する画面（下部タブを出し、曲のBGMを流し続ける）
-const MAIN = ['top','home','links'];
+const MAIN = ['top','home','shop','links'];
 function show(name){
-  for(const s of ['load','top','home','links','detail','pause','result']) $(s).hidden = s!==name;
+  for(const s of ['load','top','home','shop','links','detail','pause','result']) $(s).hidden = s!==name;
   $('tabbar').hidden = !MAIN.includes(name);
   document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected', t.dataset.tab===name));
   if(name!=='top') endTalk();
@@ -574,10 +661,9 @@ $('nowPlaying').addEventListener('click', e=>{ e.stopPropagation(); playSE('ui')
 /* ---------- タブ ---------- */
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
   const name = t.dataset.tab;
-  if(name==='shop'){ playSE('ui'); toast('楽曲購入は準備中です ♡'); return; }
   if(name===state) return;
   playSE('ui');
-  if(name==='top') enterTop(); else if(name==='home') enterHome(false); else { show(name); ensureHomeBgm(); }
+  if(name==='top') enterTop(); else if(name==='home') enterHome(false); else if(name==='shop') openShop(); else { show(name); ensureHomeBgm(); }
 }));
 
 /* ---------- ホーム：キャラクターとお喋り ---------- */
@@ -639,7 +725,7 @@ function setPartner(i, greet){
 function enterTop(){
   stopPreview(); stopMusic(); running=false; idleDraw();
   show('top'); ensureHomeBgm();
-  setPartner(partner, true); armIdle(); updateNewsDot();
+  setPartner(partner, true); armIdle(); updateNewsDot(); renderShop();
 }
 $('chara').addEventListener('click', ()=>{
   const c = $('chara'); c.classList.remove('hop'); void c.offsetWidth; c.classList.add('hop');
@@ -705,7 +791,7 @@ function heartState(){
 function nextHeartMs(h){ return h.n >= HEART_MAX ? 0 : HEART_MS - (Date.now() - h.t); }
 function fullHeartMs(h){ return h.n >= HEART_MAX ? 0 : nextHeartMs(h) + (HEART_MAX - h.n - 1)*HEART_MS; }
 const mmss = ms => { const t = Math.max(0, Math.ceil(ms/1000)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); };
-function addHearts(n){ const h = heartState(); h.n += n; if(h.n >= HEART_MAX) h.t = Date.now(); store.set('hearts', h); renderHearts(); }
+function addHearts(n){ const h = heartState(); h.n += n; if(h.n >= HEART_MAX) h.t = Date.now(); store.set('hearts', h); heartSaved = JSON.stringify(h); renderHearts(); }
 // 足りない時はハートのパネルを出して false を返す
 function useHeart(){
   const h = heartState();
@@ -726,9 +812,9 @@ function renderHearts(){
   $('heartBarTime').textContent = $('heartPillTime').textContent;
   heartRow($('heartRowBig'), h.n);
   const msg = $('heartMsg');
-  if(h.n >= HEART_MAX){ msg.innerHTML = 'ハートは満タンです ♡ <b>'+h.n+'/'+HEART_MAX+'</b>'; }
+  if(h.n >= HEART_MAX){ msg.innerHTML = 'ライフは満タンです ♡ <b>'+h.n+'/'+HEART_MAX+'</b>'; }
   else msg.innerHTML = 'いま <b>'+h.n+'/'+HEART_MAX+'</b>　つぎの回復まで <b>'+mmss(next)+'</b><br>満タンまで <b>'+mmss(fullHeartMs(h))+'</b>';
-  if(sheetHeartLack && h.n < 1) msg.innerHTML = '<span class="hlack">ハートが足りません</span><br>'+msg.innerHTML;
+  if(sheetHeartLack && h.n < 1) msg.innerHTML = '<span class="hlack">ライフが足りません</span><br>'+msg.innerHTML;
 }
 let sheetHeartLack = false;
 function openHeartSheet(lack){ sheetHeartLack = !!lack; renderHearts(); openSheet('sheetHeart'); }
@@ -737,6 +823,94 @@ $('heartBar').onclick = ()=>openHeartSheet(false);
 // プレイ中は判定の邪魔をしないよう更新しない
 setInterval(()=>{ if(state!=='play') renderHearts(); }, 1000);
 renderHearts();
+
+/* ---------- 魂片（ゲーム内通貨） ---------- */
+// 所持数はこの端末に保存。魂片の購入を実装したら addSouls(n) で増やす
+function souls(){ const n = store.get('souls', 0); return typeof n==='number' && n>=0 ? Math.floor(n) : 0; }
+function addSouls(n){ store.set('souls', Math.max(0, souls() + n)); renderShop(); }
+function spendSouls(n){ if(souls() < n) return false; store.set('souls', souls() - n); renderShop(); return true; }
+const SOUL_PACKS = [{n:3, yen:180},{n:10, yen:600},{n:25, yen:1500},{n:50, yen:3000},{n:120, yen:7200},{n:200, yen:12000}];
+SOUL_PACKS.forEach((p,i)=>{ const d=document.createElement('div'); d.className='pack';
+  d.innerHTML = `<img src="img/soul_${i+1}.webp" alt=""><b>${p.n}<small>魂片</small></b><button class="price" aria-disabled="true">${p.yen.toLocaleString()}円</button>`;
+  d.querySelector('.price').onclick = ()=>{ playSE('ui'); toast('魂片の購入は準備中です ♡'); };
+  $('packList').appendChild(d); });
+
+// 購入の確認
+let confirmOk = null;
+function confirmBuy(text, cost, ok){
+  if(souls() < cost){ playSE('ui'); toast('魂片が足りません（あと '+(cost-souls())+'）'); return; }
+  $('confirmText').innerHTML = text+'<br><img class="soulIc" src="img/soul.webp" alt="">'+cost+' 魂片を使います（所持 '+souls()+'）';
+  confirmOk = ok; openSheet('sheetConfirm');
+}
+$('confirmNo').onclick = ()=>{ playSE('ui'); closeSheet($('sheetConfirm')); };
+$('confirmYes').onclick = ()=>{ const f = confirmOk; confirmOk = null; closeSheet($('sheetConfirm')); if(f) f(); };
+
+// SHOP
+let shopCat = 'soul';
+function openShop(cat){
+  if(cat) shopCat = cat;
+  show('shop'); ensureHomeBgm(); renderShop();
+}
+document.querySelectorAll('.seg button').forEach(b=>b.onclick = ()=>{ playSE('ui'); shopCat = b.dataset.cat; renderShop(); });
+function renderShop(){
+  const n = souls();
+  document.querySelectorAll('.soulNum').forEach(e=>e.textContent = n.toLocaleString());
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-selected', b.dataset.cat===shopCat));
+  for(const c of ['soul','life','song','bg','skin']) $('cat-'+c).hidden = c!==shopCat;
+  // ライフ
+  const h = heartState(), lack = Math.max(0, HEART_MAX - h.n);
+  $('lifeNow').textContent = h.n+'/'+HEART_MAX;
+  $('buyLife1').innerHTML = lack ? '<img class="soulIc" src="img/soul.webp" alt="">1' : '満タン';
+  $('buyLife1').disabled = !lack;
+  $('buyLifeFull').innerHTML = lack ? '<img class="soulIc" src="img/soul.webp" alt="">'+lack : '満タン';
+  $('buyLifeFull').disabled = !lack;
+  $('lifeFullSub').textContent = lack ? 'あと'+lack+'個' : 'いまは満タンです';
+  renderThemes();
+}
+function buyLife(k){
+  confirmBuy('ライフを'+k+'個回復します', k, ()=>{ if(spendSouls(k)){ addHearts(k); playSE('tap'); toast('ライフが'+k+'個回復しました ♡'); renderShop(); } });
+}
+$('buyLife1').onclick = ()=>{ playSE('ui'); buyLife(1); };
+$('buyLifeFull').onclick = ()=>{ playSE('ui'); buyLife(Math.max(0, HEART_MAX - heartState().n)); };
+$('soulPillTop').onclick = ()=>{ playSE('ui'); openShop('soul'); };
+$('heartBuy').onclick = ()=>{ playSE('ui'); closeSheet($('sheetHeart')); if(state==='detail' || state==='result'){ toast('ホームの SHOP からライフを回復できます'); return; } openShop('life'); };
+
+/* ---------- テーマ（背景） ---------- */
+const THEMES = [
+  {key:'purple', name:'ミッドナイト・パープル', cost:0,  sw:'linear-gradient(160deg,#4a2a60,#1b0e24 70%)'},
+  {key:'blue',   name:'ディープシー・ブルー',   cost:50, sw:'linear-gradient(160deg,#2a5aa0,#0e1b3c 70%)'},
+  {key:'black',  name:'ゴシック・ブラック',     cost:50, sw:'linear-gradient(160deg,#3a3940,#0a0a0c 70%)'},
+  {key:'pink',   name:'ストロベリー・ピンク',   cost:50, sw:'linear-gradient(160deg,#a03a7c,#36112c 70%)'},
+];
+function ownedThemes(){ const o = store.get('themes', []); return ['purple', ...(Array.isArray(o)?o:[])]; }
+function curTheme(){ const t = store.get('theme','purple'); return ownedThemes().includes(t) ? t : 'purple'; }
+function applyTheme(){ const t = curTheme(); if(t==='purple') $('app').removeAttribute('data-theme'); else $('app').setAttribute('data-theme', t);
+  const m = document.querySelector('meta[name=theme-color]'); if(m) m.content = getComputedStyle($('app')).getPropertyValue('--night').trim() || '#140a18'; }
+function themeCard(t, mode){
+  const own = ownedThemes().includes(t.key), use = curTheme()===t.key;
+  const b = document.createElement('button'); b.className = 'theme'; b.setAttribute('aria-pressed', use);
+  const tag = use ? '<span class="tag use">使用中</span>' : own ? '<span class="tag">タップで切り替え</span>'
+    : mode==='shop' ? '<span class="buy" style="align-self:flex-start"><img class="soulIc" src="img/soul.webp" alt="">'+t.cost+'</span>' : '<span class="tag">🔒 SHOPで購入</span>';
+  b.innerHTML = `<span class="sw ${own||mode==='shop'?'':'lock'}" style="background:${t.sw}"></span><b></b>${tag}`;
+  b.querySelector('b').textContent = t.name;
+  b.onclick = ()=>{
+    playSE('ui');
+    if(own){ store.set('theme', t.key); applyTheme(); renderThemes(); toast(t.name+' に変えました ♡'); return; }
+    if(mode!=='shop'){ closeSheet($('sheetTheme')); openShop('bg'); return; }
+    confirmBuy(t.name+' を購入します', t.cost, ()=>{
+      if(!spendSouls(t.cost)) return;
+      store.set('themes', [...new Set([...ownedThemes().filter(k=>k!=='purple'), t.key])]);
+      store.set('theme', t.key); applyTheme(); renderShop(); playSE('tap'); toast(t.name+' を購入して切り替えました ♡');
+    });
+  };
+  return b;
+}
+function renderThemes(){
+  const shop = $('themeShop'), list = $('themeList'); shop.innerHTML = ''; list.innerHTML = '';
+  THEMES.forEach(t=>{ if(t.cost) shop.appendChild(themeCard(t,'shop')); list.appendChild(themeCard(t,'home')); });
+}
+$('btnTheme').onclick = ()=>{ renderThemes(); openSheet('sheetTheme'); };
+applyTheme(); renderShop();
 
 /* ---------- リンク ---------- */
 LINK_ORDER.map(k=>STANDS.find(s=>s.key===k)).forEach(s=>{
