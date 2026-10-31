@@ -1128,16 +1128,20 @@ renderGifts();
 const DAILY = [
   {id:'login', title:'ログインする',     need:1, souls:1, val:d=>1},
   {id:'play1', title:'1曲プレイする',    need:1, souls:1, val:d=>d.plays},
-  {id:'play3', title:'3回プレイする',    need:3, souls:2, val:d=>d.plays},
-  {id:'play5', title:'5回プレイする',    need:5, souls:3, val:d=>d.plays},
+  {id:'play3', title:'3回プレイする',    need:3, souls:1, val:d=>d.plays},
+  {id:'play5', title:'5回プレイする',    need:5, souls:1, val:d=>d.plays},
 ];
-const DAILY_BONUS = {id:'all', title:'デイリーミッションをすべて達成', souls:10};
+const DAILY_BONUS = {id:'all', title:'デイリーミッションをすべて達成', souls:5};
 // 楽曲ミッション（持っている曲ごと・1回だけ）
 const SONG_MISSIONS = [
-  {id:'play', title:'この曲をプレイする',     souls:1, ok:x=>store.get('plays.'+x.id, 0) >= 1},
-  {id:'nA',   title:'NORMAL で Aランク以上',  souls:2, ok:x=>store.get('best.'+x.id+'.normal', 0) >= 900000},
-  {id:'hS',   title:'HARD で Sランク以上',    souls:3, ok:x=>store.get('best.'+x.id+'.hard', 0) >= 950000},
-  {id:'xFC',  title:'EXTRA でフルコンボ',     souls:5, ok:x=>!!store.get('fc.'+x.id+'.extra', false)},
+  {id:'play',  title:'この曲をプレイする',          souls:5,  ok:x=>store.get('plays.'+x.id, 0) >= 1},
+  {id:'eFC',   title:'EASY でフルコンボ',           souls:5,  ok:x=>!!store.get('fc.'+x.id+'.easy', false)},
+  {id:'nA',    title:'NORMAL で Aランク以上',       souls:5,  ok:x=>store.get('best.'+x.id+'.normal', 0) >= 900000},
+  {id:'hA',    title:'HARD で Aランク以上',         souls:5,  ok:x=>store.get('best.'+x.id+'.hard', 0) >= 900000},
+  {id:'x800',  title:'EXTRA で 800,000 スコア以上', souls:5,  ok:x=>store.get('best.'+x.id+'.extra', 0) >= 800000},
+  {id:'share', title:'この曲の結果を共有する',      souls:5,  ok:x=>!!store.get('shared.'+x.id, false)},
+  {id:'hFC',   title:'HARD でフルコンボ',           souls:10, ok:x=>!!store.get('fc.'+x.id+'.hard', false)},
+  {id:'xFC',   title:'EXTRA でフルコンボ',          souls:10, ok:x=>!!store.get('fc.'+x.id+'.extra', false)},
 ];
 function today(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function daily(){
@@ -1574,7 +1578,7 @@ function finish(){
   $('rBest').textContent = sc>prev ? 'NEW BEST ♡' : 'BEST '+prev.toLocaleString();
   if(sc>prev) store.set(key, sc);
   recordPlay(song, diff, J.m===0);
-  lastResult = {title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent,
+  lastResult = {id:song.id, title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent,
     p:J.p, g:J.g, o:J.o, m:J.m, combo:maxCombo, total:totalJ, newBest:sc>prev};
   // 共有メニューはタップした瞬間に呼ばないと開けないため、ジャケット画像は結果表示の時点で用意しておく
   prepareShareImage(song, lastResult);
@@ -1680,6 +1684,8 @@ const PUBLIC_URL = 'https://caitakenchikuclub.github.io/ClaudeGame005/www/';
 $('rShare').onclick = ()=>{
   if(!lastResult) return;
   const r = lastResult;
+  // 「この曲の結果を共有する」ミッション用（共有ボタンを押したら達成）
+  if(!store.get('shared.'+r.id, false)){ store.set('shared.'+r.id, true); renderMissions(); }
   const text = 'Pickle Melody\n'
     + '『'+r.title+'』'+r.diff+' Lv.'+r.lv+'\n'
     + 'SCORE '+r.score.toLocaleString()+'（'+r.rank+'）'+(r.badge ? ' '+r.badge : '');
