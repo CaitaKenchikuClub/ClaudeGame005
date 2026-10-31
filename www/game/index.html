@@ -907,9 +907,12 @@ renderHearts();
 
 /* ---------- 魂片（ゲーム内通貨） ---------- */
 // 所持数はこの端末に保存。魂片の購入を実装したら addSouls(n) で増やす
+// 開発中は開くたびに魂片を DEV_SOULS まで補充する。配信するときは 0 にする（補充されなくなる）
+const DEV_SOULS = 999;
 function souls(){ const n = store.get('souls', 0); return typeof n==='number' && n>=0 ? Math.floor(n) : 0; }
 function addSouls(n){ store.set('souls', Math.max(0, souls() + n)); renderShop(); }
 function spendSouls(n){ if(souls() < n) return false; store.set('souls', souls() - n); renderShop(); return true; }
+if(DEV_SOULS && souls() < DEV_SOULS) store.set('souls', DEV_SOULS);
 const SOUL_PACKS = [{n:3, yen:180},{n:10, yen:600},{n:25, yen:1500},{n:50, yen:3000},{n:120, yen:7200},{n:200, yen:12000}];
 SOUL_PACKS.forEach((p,i)=>{ const d=document.createElement('div'); d.className='pack';
   d.innerHTML = `<img src="img/soul_${i+1}.webp" alt=""><b>${p.n}<small>魂片</small></b><button class="price" aria-disabled="true">${p.yen.toLocaleString()}円</button>`;
