@@ -34,18 +34,22 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
 /* ---------- loading ---------- */
-#load{padding:0;cursor:pointer;justify-content:flex-end;align-items:center;background:#000}
-/* イラストは下の文字の帯の上までにして、ロゴと「TAP TO START」が重ならないようにする */
-#load .art{position:absolute;inset:0 0 calc(118px + env(safe-area-inset-bottom,0px)) 0;background:center/cover no-repeat}
+#load{padding:0;cursor:pointer;justify-content:flex-end;align-items:center;background:#fff6fb}
+/* イラストは画面いっぱい。下の文字のところだけ白いもやをかけて、ロゴに重なっても読めるようにする */
+#load .art{position:absolute;inset:0;background:center/cover no-repeat}
 #load .art::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,0) 90%,#000),radial-gradient(130% 90% at 50% 40%,transparent 62%,rgba(40,0,20,.35))}
+  background:
+    radial-gradient(52% 7% at 50% calc(100% - 62px - env(safe-area-inset-bottom,0px)),rgba(255,250,253,.72),rgba(255,250,253,.3) 60%,transparent 100%),
+    radial-gradient(40% 7% at 20% 100%,rgba(255,240,250,.6),transparent 100%),
+    radial-gradient(40% 7% at 82% 100%,rgba(245,240,255,.6),transparent 100%),
+    linear-gradient(180deg,transparent 86%,rgba(255,248,252,.25) 93%,rgba(255,248,252,.6))}
 .loadfoot{position:relative;z-index:6;display:flex;flex-direction:column;align-items:center;gap:12px;padding-bottom:max(36px,env(safe-area-inset-bottom,0px))}
-.lbar{width:200px;height:6px;border-radius:6px;background:rgba(255,241,248,.18);overflow:hidden}
+.lbar{width:200px;height:6px;border-radius:6px;background:rgba(122,58,140,.16);overflow:hidden}
 .lbar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--mint),var(--pink),var(--lilac));transition:width .2s}
-#tapStart{font-family:var(--f-pop);font-size:22px;color:var(--milk);text-shadow:0 0 12px rgba(255,156,207,.9),0 0 2px var(--blood)}
+#tapStart{font-family:var(--f-pop);font-size:22px;color:#6a2a7c;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 10px #fff,0 0 18px rgba(255,255,255,.9)}
 #tapStart.ready{animation:breathe 1.8s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.35}}
-.lnote{font-size:11px;color:var(--dusk);letter-spacing:.08em}
+.lnote{font-size:11px;font-weight:700;color:#8a5a9a;letter-spacing:.08em;text-shadow:0 0 6px #fff,0 0 2px #fff}
 
 /* ---------- home ---------- */
 #home{padding:0;overflow:hidden;background:
@@ -583,7 +587,7 @@ function stopPreview(){ if(previewSrc){ const p=previewSrc; previewSrc=null; try
 /* ---------- preload images ---------- */
 // オープニングのイラストは毎回ランダム
 // pos は画面が短くて上下が切れる時に、どちら側を残すか（ロゴのある側）
-const OPENINGS = [{src:'img/loading.jpg', pos:'center top'}, {src:'img/opening_2.jpg', pos:'center bottom'}, {src:'img/opening_3.jpg', pos:'center bottom'}];
+const OPENINGS = [{src:'img/loading.jpg', pos:'center top'}, {src:'img/opening_2.jpg', pos:'center 70%'}, {src:'img/opening_3.jpg', pos:'center 70%'}];
 const OP = OPENINGS[Math.floor(Math.random()*OPENINGS.length)], OPENING = OP.src;
 document.querySelector('#load .art').style.backgroundImage = `url("${OPENING}")`;
 document.querySelector('#load .art').style.backgroundPosition = OP.pos;
