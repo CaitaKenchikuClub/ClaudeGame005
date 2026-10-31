@@ -284,6 +284,8 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   --tabBg:rgba(6,14,32,.94);--sheetBg:linear-gradient(180deg,#183262,#0c1836);--glass:rgba(8,18,40,.68);--shelf:rgba(6,14,32,.92);--night:#081128}
 #app[data-theme=black]{--bgGrad:linear-gradient(180deg,#24232a 0%,#141317 58%,#060607 100%);--glowA:rgba(255,255,255,.13);--glowB:rgba(255,61,127,.15);
   --tabBg:rgba(8,8,10,.95);--sheetBg:linear-gradient(180deg,#26252b,#131215);--glass:rgba(10,10,12,.72);--shelf:rgba(8,8,10,.93);--night:#0a0a0c}
+#app[data-theme=green]{--bgGrad:linear-gradient(180deg,#1f4f37 0%,#112c20 58%,#06140d 100%);--glowA:rgba(175,255,205,.3);--glowB:rgba(255,120,170,.18);
+  --tabBg:rgba(6,20,13,.94);--sheetBg:linear-gradient(180deg,#1f4a35,#0e251a);--glass:rgba(8,26,17,.68);--shelf:rgba(6,20,13,.92);--night:#08170f}
 #app[data-theme=pink]{--bgGrad:linear-gradient(180deg,#5a1f47 0%,#36112c 58%,#1c0817 100%);--glowA:rgba(255,190,226,.38);--glowB:rgba(255,61,127,.32);
   --tabBg:rgba(34,8,26,.94);--sheetBg:linear-gradient(180deg,#58204a,#2c0d24);--glass:rgba(40,10,30,.66);--shelf:rgba(34,8,26,.92);--night:#1e0919}
 
@@ -1021,6 +1023,7 @@ const THEMES = [
   {key:'blue',   name:'ディープシー・ブルー',   cost:50, sw:'linear-gradient(160deg,#2a5aa0,#0e1b3c 70%)'},
   {key:'black',  name:'ゴシック・ブラック',     cost:50, sw:'linear-gradient(160deg,#3a3940,#0a0a0c 70%)'},
   {key:'pink',   name:'ストロベリー・ピンク',   cost:50, sw:'linear-gradient(160deg,#a03a7c,#36112c 70%)'},
+  {key:'green',  name:'ピクルス・グリーン',     cost:50, sw:'linear-gradient(160deg,#2f8a5a,#112c20 70%)'},
 ];
 function ownedThemes(){ const o = store.get('themes', []); return ['purple', ...(Array.isArray(o)?o:[])]; }
 function curTheme(){ const t = store.get('theme','purple'); return ownedThemes().includes(t) ? t : 'purple'; }
