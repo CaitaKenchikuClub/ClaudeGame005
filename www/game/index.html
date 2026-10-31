@@ -392,6 +392,17 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .msong header b{font-size:14px;line-height:1.3}
 .allBtn{width:100%;margin-bottom:10px;padding:12px}
 .allBtn:disabled{background:rgba(255,241,248,.08);color:var(--dusk);border:1px solid var(--fog)}
+
+/* ---------- SHOP：キャラクター ---------- */
+#skinSeg{margin-bottom:0}
+#skin-chara{display:grid;gap:12px}
+.charaShop{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.citem{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 10px;border-radius:18px;background:var(--glass);border:1px solid rgba(201,178,255,.4);min-width:0}
+.citem .cs{width:100%;height:180px;background-size:contain;background-repeat:no-repeat;background-position:center bottom;filter:drop-shadow(0 0 10px rgba(201,178,255,.35))}
+.citem b{font-size:12px;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:center}
+.citem .buy{width:100%;padding:8px 4px;font-size:12px}
+#charaList button.locked img{filter:grayscale(.7) brightness(.6)}
+#charaList button.locked span{color:var(--dusk)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -465,7 +476,11 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
       <div class="note">買ったテーマは、ホームの「テーマ」からいつでも切り替えられます</div>
       <div class="themes" id="themeShop"></div>
     </div>
-    <div class="cat" id="cat-skin" hidden><div class="soon2"><b>Coming soon ♡</b>スキンは準備中です</div></div>
+    <div class="cat" id="cat-skin" hidden>
+      <div class="mseg" id="skinSeg" role="tablist"><button role="tab" data-sk="chara">キャラクター</button><button role="tab" data-sk="cos">衣装</button></div>
+      <div id="skin-chara"><div class="note">購入したキャラは、ホームの「キャラ変更」で選べます ♡ 曲選択画面にも登場します</div><div class="charaShop" id="charaShop"></div></div>
+      <div id="skin-cos" hidden><div class="soon2"><b>Coming soon ♡</b>衣装は準備中です</div></div>
+    </div>
   </section>
 
   <section id="detail" class="screen" hidden aria-label="難易度選択">
@@ -597,6 +612,9 @@ const STANDS = [
   {key:'kyuri', name:'神葉ユゥ', url:'https://caita.ai/series/01KKSF6F3J4BC1TXMBHBDGWP8P'},
   {key:'lemon', name:'白柑橘レモン', url:'https://caita.ai/series/01KVHBQSSKV0ETFJCFTANQNWH9'},
   {key:'berry', name:'木苺ベリィ', url:'https://caita.ai/series/01KV8D7BJ06CEV7M9657809TQB'},
+  {key:'mero', name:'那須野メロ', price:5000},
+  {key:'ponta', name:'黄桃ぽんた', price:5000},
+  {key:'broccoli', name:'ブロッコリー女', price:5000},
 ];
 // リンク画面に並べる順番
 const LINK_ORDER = ['soda','berry','kyuri','mashiro','lemon'];
@@ -694,7 +712,8 @@ $('load').addEventListener('click', async ()=>{
 /* ---------- home ---------- */
 let curStand = -1;
 function pickStand(){
-  let i; do{ i = Math.floor(Math.random()*STANDS.length); }while(i===curStand && STANDS.length>1);
+  const pool = STANDS.map((x,k)=>k).filter(k=>hasChara(STANDS[k]));
+  let i; do{ i = pool[Math.floor(Math.random()*pool.length)]; }while(i===curStand && pool.length>1);
   curStand = i; const s = STANDS[i], img = $('stand');
   img.style.animation='none'; void img.offsetWidth; img.style.animation='';
   img.src = 'img/s_'+s.key+'.webp'; img.alt = s.name; $('standName').textContent = s.name;
@@ -800,13 +819,28 @@ const LINES = {
     tap:['ふわふわなマシュマロ、おひとつどうぞ♡','焼くとね、とろ〜ってなるの。しあわせ……','わわっ、ふわふわだから、やさしくね','ココアに浮かべるのも、おすすめだよ','ぎゅってされると、ちょっとつぶれちゃうの'],
     idle:['ふわふわしてたら、時間たっちゃった……','すぅ……すぅ……はっ、寝てないよ？','あまいもの、たべたくなってきちゃった'],
   },
+  mero: {
+    greet:['よっ、待ってたぜ！今日もステージ、いっとく？','おかえり。ちゃんと会いに来てくれたんだ'],
+    tap:['メロウ・マイ・ディア、聴いてくれた？','この狐のお面？ 気になる？ ふふ、内緒','なすの紫、似合ってるだろ？','マイク持つと、スイッチ入っちゃうんだよね','お札は…まあ、お守りみたいなもんかな'],
+    idle:['……おーい、寝てない？','一緒に一曲、どう？','静かだな。じゃ、ちょっとだけ歌っとくか'],
+  },
+  ponta: {
+    greet:['ぽんぽこぽん！ぽんた参上だぽん！','おかえりだぽん！今日も化かしちゃうぽん♡'],
+    tap:['アライグマ？ 違うぽん！ぽんたは立派な狸だぽん！','桃より甘くて、狸より賢いぽん！','……つもりのぽんただぽん！','狸鍋はいやだぽん！','召しませ、素材！'],
+    idle:['桃食べてたら、ねむくなってきたぽん…','騙される準備はいいぽん？','ぽんたのこと、忘れてないぽん？'],
+  },
+  broccoli: {
+    greet:['レッツゴー！校長！ブロッコリー！','はいっ！はいっ！今日も元気に参上！'],
+    tap:['投げるの？投げないの？……やっぱり投げる！','面白い！楽しい！それが一番！','緑のスーツは、トレードマーク！','鳥とキュウリは……ノーセンキュー！','細かいことなら、気にしない！'],
+    idle:['……あっ！後ろにいるよ！','いつの間にやら、あなたの後ろ！','明日もどこかで、ブロッコリー！'],
+  },
   lemon: {
     greet:['爽やかキュートなレモン、お届けにあがりました！','おかえり！ビタミン補給していこっ'],
     tap:['ちょっと酸っぱいくらいが、ちょうどいいの！','眠そうな顔してる。ビタミン足りてる？','レモンのお花って、白くていい香りなんだよ','しぼったらしゃきっとするよ、気分も！','えへへ、くすぐったい！'],
     idle:['あれ？寝ちゃった？しゃきっとしよっ','はちみつレモン、作ってあげよっか？','ねえねえ、一曲いっとく？'],
   },
 };
-let partner = Math.max(0, STANDS.findIndex(s=>s.key===store.get('partner','kyuri')));
+let partner = Math.max(0, STANDS.findIndex(s=>s.key===store.get('partner','kyuri') && (!s.price || (store.get('charasOwned',[])||[]).includes(s.key))));
 let talkTimer = 0, idleTimer = 0, lastLine = '';
 function pickLine(list){ let t; do{ t = list[Math.floor(Math.random()*list.length)]; }while(t===lastLine && list.length>1); lastLine = t; return t; }
 function speak(kind){
@@ -830,7 +864,7 @@ function setPartner(i, greet){
   store.set('partner', s.key);
   const img = $('charaImg'); img.style.animation='none'; void img.offsetWidth; img.style.animation='';
   img.src = 'img/s_'+s.key+'.webp'; img.alt = s.name; $('charaName').textContent = s.name;
-  document.querySelectorAll('#charaList button').forEach((b,j)=>b.setAttribute('aria-pressed', j===i));
+  renderCharaList();
   if(greet) setTimeout(()=>speak('greet'), 450);
 }
 function enterTop(){
@@ -852,6 +886,7 @@ document.querySelectorAll('.sheet').forEach(sh=>{
 });
 // お知らせ（新しいものを上に書き足す）
 const NEWS = [
+  {date:'2026.10.31', title:'新しいキャラクターがSHOPに登場！', body:'那須野メロ・黄桃ぽんた・ブロッコリー女を、SHOPの「スキン」から迎えられます。迎えた子はホームでお喋りしたり、曲選択に遊びに来たりします ♡'},
   {date:'2026.10.31', title:'タップのノーツをなぞっても判定されるように', body:'指を画面に置いたままスライドして、白いタップ（同時押しの金色も）を通過すると判定されます。フリックと長押しは今までどおりです。'},
   {date:'2026.10.31', title:'ミッションができました', body:'ホーム左の書類アイコンから。毎日のデイリーミッションと、曲ごとの楽曲ミッションをクリアすると魂片がもらえます ♡'},
   {date:'2026.10.31', title:'新曲2曲がSHOPに登場！', body:'「ブロッコリー投げ女」「ぽんたは天才だぽん！」を魂片と交換できるようになりました。試聴もできます ♡ 「メロウ・マイ・ディア」もSHOPでの交換になりました（これまで遊んでいた方はそのまま遊べます）。'},
@@ -868,11 +903,18 @@ const newsKey = NEWS.length ? NEWS[0].date+'|'+NEWS[0].title : '';
 function updateNewsDot(){ $('newsDot').hidden = !newsKey || store.get('newsSeen','')===newsKey; }
 $('btnNews').onclick = ()=>{ openSheet('sheetNews'); store.set('newsSeen', newsKey); updateNewsDot(); };
 // キャラクター変更
-STANDS.forEach((s,i)=>{ const b=document.createElement('button'); b.innerHTML='<img alt=""><span></span>';
-  b.querySelector('img').src='img/i_'+s.key+'.webp'; b.querySelector('span').textContent=s.name;
-  b.onclick=()=>{ playSE('ui'); closeSheet($('sheetChara')); setPartner(i, true); };
-  $('charaList').appendChild(b); });
-$('btnChara').onclick = ()=>openSheet('sheetChara');
+function charaOwned(){ const o = store.get('charasOwned', []); return Array.isArray(o) ? o : []; }
+function hasChara(c){ return !c.price || charaOwned().includes(c.key); }
+function renderCharaList(){
+  const box = $('charaList'); box.innerHTML = '';
+  STANDS.forEach((s,i)=>{ const own = hasChara(s), b=document.createElement('button'); b.innerHTML='<img alt=""><span></span>';
+    b.querySelector('img').src='img/i_'+s.key+'.webp'; b.querySelector('span').textContent = own ? s.name : '🔒 '+s.name;
+    if(!own) b.classList.add('locked');
+    b.setAttribute('aria-pressed', i===partner);
+    b.onclick=()=>{ playSE('ui'); closeSheet($('sheetChara')); if(own) setPartner(i, true); else { shopCat='skin'; skinCat='chara'; openShop(); } };
+    box.appendChild(b); });
+}
+$('btnChara').onclick = ()=>{ renderCharaList(); openSheet('sheetChara'); };
 // 音量（楽曲・効果音）
 let volMusic = store.get('volMusic', 100), volSe = store.get('volSe', 100);
 function applyVol(){
@@ -989,7 +1031,7 @@ function renderShop(){
   $('buyLifeFull').innerHTML = lack ? '<img class="soulIc" src="img/soul.webp" alt="">'+(lack*LIFE_COST).toLocaleString() : '満タン';
   $('buyLifeFull').disabled = !lack;
   $('lifeFullSub').textContent = lack ? 'あと'+lack+'個' : 'いまは満タンです';
-  renderThemes(); renderSongShop();
+  renderThemes(); renderSongShop(); renderCharaShop();
 }
 function buyLife(k){
   confirmBuy('ライフを'+k+'個回復します', k*LIFE_COST, ()=>{ if(spendSouls(k*LIFE_COST)){ addHearts(k); playSE('tap'); toast('ライフが'+k+'個回復しました ♡'); renderShop(); renderHeartBuy(); } });
@@ -1048,6 +1090,31 @@ function renderSongShop(){
         if(!spendSouls(x.price)) return;
         store.set('songsOwned', [...new Set([...ownedIds(), x.id])]);
         renderRail(); renderSongShop(); renderMissions(); playSE('tap'); toast('「'+x.title+'」が曲選択に追加されました ♡');
+      }); };
+    }
+    box.appendChild(d);
+  });
+}
+
+/* ---------- SHOP：スキン ---------- */
+let skinCat = 'chara';
+document.querySelectorAll('#skinSeg button').forEach(b=>b.onclick = ()=>{ playSE('ui'); skinCat = b.dataset.sk; renderCharaShop(); });
+function renderCharaShop(){
+  document.querySelectorAll('#skinSeg button').forEach(b=>b.setAttribute('aria-selected', b.dataset.sk===skinCat));
+  $('skin-chara').hidden = skinCat!=='chara'; $('skin-cos').hidden = skinCat!=='cos';
+  const box = $('charaShop'); box.innerHTML = '';
+  STANDS.filter(c=>c.price).forEach(c=>{
+    const own = hasChara(c), d = document.createElement('div'); d.className = 'citem';
+    d.innerHTML = `<span class="cs" style="background-image:url(img/s_${c.key}.webp)"></span><b></b><button class="buy"></button>`;
+    d.querySelector('b').textContent = c.name;
+    const bb = d.querySelector('.buy');
+    if(own){ bb.classList.add('own'); bb.textContent = '購入済み'; bb.onclick = ()=>{ playSE('ui'); toast('ホームの「キャラ変更」で選べます ♡'); }; }
+    else {
+      bb.innerHTML = '<img class="soulIc" src="img/soul.webp" alt="">'+c.price.toLocaleString();
+      bb.onclick = ()=>{ playSE('ui'); confirmBuy(c.name+' を購入します', c.price, ()=>{
+        if(!spendSouls(c.price)) return;
+        store.set('charasOwned', [...new Set([...charaOwned(), c.key])]);
+        renderCharaShop(); playSE('tap'); toast(c.name+' がやってきた！ホームの「キャラ変更」で選べます ♡');
       }); };
     }
     box.appendChild(d);
@@ -1193,7 +1260,7 @@ function renderMissions(){
   const n = claimable(); $('missionBadge').hidden = !n; $('missionBadge').textContent = n;
   $('missionAll').disabled = !n; $('missionAll').textContent = n ? 'まとめて受け取る（'+n+'件）' : '受け取れるミッションはありません';
   if($('sheetMission').hidden) return;
-  document.querySelectorAll('.mseg button').forEach(b=>b.setAttribute('aria-selected', b.dataset.mt===missionTab));
+  document.querySelectorAll('#sheetMission .mseg button').forEach(b=>b.setAttribute('aria-selected', b.dataset.mt===missionTab));
   const list = $('missionList'); list.innerHTML = '';
   if(missionTab==='daily'){
     const now = new Date(), next = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1), left = next - now;
@@ -1210,7 +1277,7 @@ function renderMissions(){
     });
   }
 }
-document.querySelectorAll('.mseg button').forEach(b=>b.onclick = ()=>{ playSE('ui'); missionTab = b.dataset.mt; renderMissions(); $('missionList').parentElement.scrollTop = 0; });
+document.querySelectorAll('#sheetMission .mseg button').forEach(b=>b.onclick = ()=>{ playSE('ui'); missionTab = b.dataset.mt; renderMissions(); $('missionList').parentElement.scrollTop = 0; });
 // デイリー・楽曲の両方で、達成しているものを全部受け取る
 $('missionAll').onclick = ()=>{
   const rows = [...dailyRows(), ...SONGS.filter(hasSong).flatMap(songRows)].filter(r=>r.ok && !r.got);
