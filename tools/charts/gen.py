@@ -1,4 +1,5 @@
-"""今の EXTRA から新しい HARD（間引き）と新しい EXTRA（追加）を作る。
+"""使い方: git show 5389c50:www/game/index.html > old.html && python3 tools/charts/gen.py old.html （元になる旧EXTRAはこの版にある）
+今の EXTRA から新しい HARD（間引き）と新しい EXTRA（追加）を作る。
 音の立ち上がり（オンセット）の強さを手がかりに、
 HARD は弱い位置のノーツを抜き、EXTRA は音が鳴っている空きの位置にノーツと同時押しを足す。"""
 import sys, json, random, collections
@@ -9,7 +10,9 @@ HTML = 'www/game/index.html'
 AUDIO = 'www/game/audio/'
 LANES = 5
 HARD_CUT = .19   # HARD は今の EXTRA から約19%減らす
-EXTRA_ADD = .26  # EXTRA は今の EXTRA から約26%増やす
+EXTRA_ADD = .22  # EXTRA は今の EXTRA から約22%増やす
+CHORD_MAX = .045 # そのうち同時押しは元のノーツ数の4.5%まで
+CHORD_GAP = 3.0  # 足す同時押しどうしは3秒以上あける
 MIN_GAP = .118   # 足すノーツは前後のノーツとこれ以上あける
 
 def unit_of(ch):
@@ -69,7 +72,8 @@ def make_extra(ch, env, u, seed):
     rnd = random.Random(seed)
     ch = sorted([list(n) for n in ch], key=lambda n: (n[0], n[1]))
     want = int(len(ch) * EXTRA_ADD)
-    steps = [u] + ([u / 2] if u / 2 >= .13 else [])
+    chord_budget = int(len(ch) * CHORD_MAX)
+    steps = [u] + ([u / 2] if u / 2 >= .104 else [])
     # 1) 空いている所で音が鳴っている位置にノーツを足す
     ts = sorted({round(n[0], 4) for n in ch})
     cands = []
@@ -78,14 +82,16 @@ def make_extra(ch, env, u, seed):
             k = 1
             while a + k * q < b - .6 * q:
                 t = a + k * q
-                if t - a >= MIN_GAP and b - t >= MIN_GAP:
-                    cands.append((strength(env, t), round(t, 4), a, b))
+                gap_ok = min(t - a, b - t) >= (MIN_GAP if q == u else .104)
+                st0 = strength(env, t)
+                if gap_ok and (q == u or st0 >= .55):
+                    cands.append((st0, round(t, 4), a, b))
                 k += 1
     cands.sort(reverse=True)
     added = 0
     for st, t, a, b in cands:
-        if added >= want * .72 or st < .3: break
-        if any(abs(n[0] - t) < MIN_GAP for n in ch): continue
+        if added >= want - int(len(ch) * 0) - chord_budget or st < .3: break
+        if any(abs(n[0] - t) < .104 for n in ch): continue
         if len(holds_at(ch, t)) >= 1 and any(abs(n[0] - t) < .2 for n in ch if n[2] not in ('hold', 'hflick')): continue
         la = [n[1] for n in ch if abs(n[0] - a) < .01]; lb = [n[1] for n in ch if abs(n[0] - b) < .01]
         around = (sum(la + lb) / len(la + lb)) if (la + lb) else 2
@@ -99,14 +105,16 @@ def make_extra(ch, env, u, seed):
         if n[2] == 'tap' and groups[round(n[0], 3)] == 1 and not holds_at(ch, n[0]):
             singles.append((strength(env, n[0]), n))
     singles.sort(key=lambda x: -x[0])
+    chord_ts = []
     for st, n in singles:
-        if added >= want: break
+        if added >= want or len(chord_ts) >= chord_budget: break
         t = n[0]
+        if any(abs(c - t) < CHORD_GAP for c in chord_ts): continue
         if any(0 < abs(m[0] - t) < MIN_GAP for m in ch if m is not n): continue
         mirror = LANES - 1 - n[1]
         lane = pick_lane(ch, t, {n[1], n[1] - 1, n[1] + 1}, rnd, mirror if mirror != n[1] else (0 if n[1] > 2 else 4))
         if lane is None or abs(lane - n[1]) < 2: continue
-        ch.append([t, lane, 'tap']); ch.sort(key=lambda m: (m[0], m[1])); added += 1
+        ch.append([t, lane, 'tap']); ch.sort(key=lambda m: (m[0], m[1])); added += 1; chord_ts.append(t)
     return ch
 
 def check(ch, name):
@@ -130,7 +138,7 @@ def check(ch, name):
     return errs
 
 if __name__ == '__main__':
-    s, i, j, SONGS = load_songs(HTML)
+    s, i, j, SONGS = load_songs(sys.argv[1] if len(sys.argv) > 1 else HTML)
     out = {}
     for x in SONGS:
         env = envelope(load(AUDIO + x['id'] + '.mp3'))
