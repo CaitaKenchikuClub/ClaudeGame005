@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#140a18"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Pickle♡Mellow リズム</title>
+<title>Pickle Melody</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@500;700;900&family=DotGothic16&display=swap">
@@ -35,9 +35,10 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
 /* ---------- loading ---------- */
 #load{padding:0;cursor:pointer;justify-content:flex-end;align-items:center;background:#000}
-#load .art{position:absolute;inset:0;background:url(img/loading.jpg) center/cover no-repeat}
+/* イラストは下の文字の帯の上までにして、ロゴと「TAP TO START」が重ならないようにする */
+#load .art{position:absolute;inset:0 0 calc(118px + env(safe-area-inset-bottom,0px)) 0;background:center/cover no-repeat}
 #load .art::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(20,10,24,0) 55%,rgba(20,10,24,.92)),radial-gradient(130% 90% at 50% 40%,transparent 55%,rgba(40,0,20,.6))}
+  background:linear-gradient(180deg,rgba(0,0,0,0) 90%,#000),radial-gradient(130% 90% at 50% 40%,transparent 62%,rgba(40,0,20,.35))}
 .loadfoot{position:relative;z-index:6;display:flex;flex-direction:column;align-items:center;gap:12px;padding-bottom:max(36px,env(safe-area-inset-bottom,0px))}
 .lbar{width:200px;height:6px;border-radius:6px;background:rgba(255,241,248,.18);overflow:hidden}
 .lbar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--mint),var(--pink),var(--lilac));transition:width .2s}
@@ -372,7 +373,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
   <section id="top" class="screen" hidden aria-label="ホーム">
     <div class="floaty" id="floatyTop"></div>
-    <div class="topHead"><b>Pickle♡Mellow</b><small>RHYTHM</small><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button><button class="giftBtn" id="giftBtn" aria-label="プレゼントボックス"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6C10.5 3 7 3 7 5s3 1 5 1zM12 6c1.5-3 5-3 5-1s-3 1-5 1z"/></svg><span class="badge" id="giftBadge" hidden></span></button></div>
+    <div class="topHead"><b>Pickle Melody</b><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button><button class="giftBtn" id="giftBtn" aria-label="プレゼントボックス"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6C10.5 3 7 3 7 5s3 1 5 1zM12 6c1.5-3 5-3 5-1s-3 1-5 1z"/></svg><span class="badge" id="giftBadge" hidden></span></button></div>
     <button id="chara" aria-label="話しかける"><img id="charaImg" alt=""></button>
     <div class="talk" id="talk" hidden aria-live="polite"><p id="talkText"></p></div>
     <div class="myName"><small>MY PARTNER</small><b id="charaName"></b></div>
@@ -580,7 +581,13 @@ function startPreview(){
 function stopPreview(){ if(previewSrc){ const p=previewSrc; previewSrc=null; try{ p._g.gain.setTargetAtTime(0, ctx.currentTime, .06); p.stop(ctx.currentTime+.3);}catch(e){} } }
 
 /* ---------- preload images ---------- */
-const IMGS = ['img/loading.jpg', ...STANDS.map(s=>'img/s_'+s.key+'.webp'), ...STANDS.map(s=>'img/i_'+s.key+'.webp'), ...SONGS.map(s=>'img/t_'+s.key+'.jpg')];
+// オープニングのイラストは毎回ランダム
+// pos は画面が短くて上下が切れる時に、どちら側を残すか（ロゴのある側）
+const OPENINGS = [{src:'img/loading.jpg', pos:'center top'}, {src:'img/opening_2.jpg', pos:'center bottom'}, {src:'img/opening_3.jpg', pos:'center bottom'}];
+const OP = OPENINGS[Math.floor(Math.random()*OPENINGS.length)], OPENING = OP.src;
+document.querySelector('#load .art').style.backgroundImage = `url("${OPENING}")`;
+document.querySelector('#load .art').style.backgroundPosition = OP.pos;
+const IMGS = [OPENING, ...STANDS.map(s=>'img/s_'+s.key+'.webp'), ...STANDS.map(s=>'img/i_'+s.key+'.webp'), ...SONGS.map(s=>'img/t_'+s.key+'.jpg')];
 let loadedCount = 0, ready = false;
 function bump(){ loadedCount++; $('loadBar').style.width = (loadedCount/IMGS.length*100)+'%'; if(loadedCount===IMGS.length) onReady(); }
 IMGS.forEach(u=>{ const im=new Image(); im.onload=bump; im.onerror=bump; im.src=u; });
@@ -759,10 +766,11 @@ document.querySelectorAll('.sheet').forEach(sh=>{
 });
 // お知らせ（新しいものを上に書き足す）
 const NEWS = [
+  {date:'2026.10.31', title:'タイトルが「Pickle Melody」になりました', body:'オープニングのイラストも2枚増えて、開くたびにランダムで表示されます ♡'},
   {date:'2026.10.31', title:'SHOPとプレゼントボックスができました', body:'魂片でライフの回復や背景テーマの購入ができます。プレゼントボックスに、はじめましてプレゼント（魂片100個）が届いています ♡'},
   {date:'2026.10.30', title:'ホーム画面ができました！', body:'お気に入りの子をホームに呼んで、お喋りできるようになりました。右の「キャラ変更」から選んでね。'},
   {date:'2026.10.30', title:'リザルトをXでシェア', body:'リザルト画面の「スコアをポストする」から、ジャケット入りのリザルト画像つきでポストできます。'},
-  {date:'2026.10.17', title:'Pickle♡Mellow リズム 公開', body:'7曲・3難易度で遊べます。イヤホン推奨です ♡'},
+  {date:'2026.10.17', title:'Pickle Melody 公開', body:'7曲・3難易度で遊べます。イヤホン推奨です ♡'},
 ];
 NEWS.forEach(n=>{ const a=document.createElement('article'); a.innerHTML='<time></time><h4></h4><p></p>';
   a.querySelector('time').textContent=n.date; a.querySelector('h4').textContent=n.title; a.querySelector('p').textContent=n.body; $('newsList').appendChild(a); });
@@ -934,7 +942,7 @@ applyTheme(); renderShop();
 /* ---------- プレゼントボックス ---------- */
 // プレゼントはここに書き足す（id は一度決めたら変えない。受け取り済みかどうかの記録に使う）
 const GIFTS = [
-  {id:'welcome-2026-10', title:'はじめましてプレゼント', body:'Pickle♡Mellow リズムへようこそ！SHOPで使ってね ♡', souls:100},
+  {id:'welcome-2026-10', title:'はじめましてプレゼント', body:'Pickle Melody へようこそ！SHOPで使ってね ♡', souls:100},
 ];
 function giftsGot(){ const g = store.get('giftsGot', []); return Array.isArray(g) ? g : []; }
 function renderGifts(){
@@ -1342,7 +1350,7 @@ async function makeResultImage(blob, r){
   const x0 = jx + jw + 80, maxW = W - x0 - 70;
   const fit = (txt, font, size, min)=>{ let z = size; c.font = font.replace('$', z); while(c.measureText(txt).width > maxW && z > min){ z -= 2; c.font = font.replace('$', z); } return z; };
   c.textBaseline = 'alphabetic'; c.textAlign = 'left';
-  c.fillStyle = '#ff9ccf'; c.font = '400 34px '+POP; c.fillText('Pickle♡Mellow リズム', x0, 118);
+  c.fillStyle = '#ff9ccf'; c.font = '400 34px '+POP; c.fillText('Pickle Melody', x0, 118);
   c.fillStyle = '#fff1f8'; fit(r.title, '400 $px '+POP, 64, 34); c.fillText(r.title, x0, 205);
   const dcol = {EASY:'#9ff3dc', NORMAL:'#c9b2ff', EXTRA:'#ff3d7f'}[r.diff] || '#c9b2ff';
   const dtxt = r.diff+'  Lv.'+r.lv; c.font = '400 34px '+DOT; const dw = c.measureText(dtxt).width + 44;
@@ -1393,7 +1401,7 @@ const PUBLIC_URL = 'https://caitakenchikuclub.github.io/ClaudeGame005/www/';
 $('rShare').onclick = ()=>{
   if(!lastResult) return;
   const r = lastResult;
-  const text = 'Pickle♡Mellow リズム\n'
+  const text = 'Pickle Melody\n'
     + '『'+r.title+'』'+r.diff+' Lv.'+r.lv+'\n'
     + 'SCORE '+r.score.toLocaleString()+'（'+r.rank+'）'+(r.badge ? ' '+r.badge : '');
   // GitHub Pages で遊んでいる時はそのトップページ、それ以外（claude.ai の版など）は公開ページのURLを付ける
