@@ -204,7 +204,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   filter:drop-shadow(0 0 18px rgba(201,178,255,.45)) drop-shadow(0 12px 30px rgba(255,61,127,.25));animation:standIn .6s cubic-bezier(.2,1.4,.4,1) both, sway 5s ease-in-out .6s infinite}
 #chara.hop #charaImg{animation:hop .45s cubic-bezier(.3,1.6,.5,1)}
 @keyframes hop{30%{transform:translateY(-14px) scale(1.02,.98)}}
-.talk{position:absolute;z-index:6;top:var(--talkTop);height:var(--talkH);left:max(16px,env(safe-area-inset-left,0px));right:76px;display:flex;justify-content:center;align-items:flex-end;pointer-events:none}
+.talk{position:absolute;z-index:6;top:var(--talkTop);height:var(--talkH);left:calc(max(16px,env(safe-area-inset-left,0px)) + 46px);right:76px;display:flex;justify-content:center;align-items:flex-end;pointer-events:none}
 .talk p{position:relative;margin:0;max-width:100%;padding:10px 16px 11px;border-radius:20px;background:var(--milk);color:#4a2156;font-family:var(--f-ui);font-weight:700;font-size:15px;line-height:1.5;letter-spacing:.02em;text-align:center;word-break:auto-phrase;text-wrap:balance;
   box-shadow:0 0 0 2px var(--pink),0 0 0 4px var(--milk),0 8px 22px rgba(255,61,127,.45);animation:pop .4s cubic-bezier(.2,1.6,.4,1) both}
 .talk p::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-6px;width:12px;height:12px;background:var(--milk);transform:rotate(45deg);box-shadow:2px 2px 0 0 var(--pink)}
@@ -369,6 +369,27 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 .sitem .sb button{flex:1}
 .play{padding:9px 10px;border-radius:14px;font-weight:700;font-size:13px;background:rgba(255,241,248,.08);border:1px solid var(--fog);white-space:nowrap}
 .play.on{border-color:var(--mint);color:var(--mint)}
+
+/* ---------- ミッション ---------- */
+.mseg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:var(--glass);border:1px solid var(--fog);margin-bottom:10px}
+.mseg button{padding:9px 0;border-radius:12px;font-size:13px;font-weight:700;color:var(--dusk)}
+.mseg button[aria-selected=true]{background:linear-gradient(90deg,var(--pink),var(--lilac));color:#3b1043}
+.mnote{font-size:11px;color:var(--dusk);text-align:center;margin:0 0 10px}
+.mlist{display:grid;gap:8px}
+.mis{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;padding:11px 14px;border-radius:16px;background:var(--glass);border:1px solid rgba(201,178,255,.35);text-align:left;width:100%}
+.mis b{font-size:14px}
+.mis .rw{font-family:var(--f-dot);font-size:13px;color:var(--milk);white-space:nowrap}
+.mis .st{grid-column:1 / -1;display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:var(--dusk)}
+.mis .st small{font-family:var(--f-dot);font-size:12px;color:var(--dusk)}
+.mis.ready{border-color:var(--pink);background:color-mix(in srgb,var(--pink) 14%,var(--glass));box-shadow:0 0 14px rgba(255,156,207,.35)}
+.mis.ready .st{color:var(--pink)}
+.mis.done{opacity:.5}
+.mis.done .st{color:var(--mint)}
+.mis.bonus{border-style:dashed}
+.msong{display:grid;gap:8px;margin-bottom:14px}
+.msong header{display:flex;align-items:center;justify-content:flex-start;gap:10px;margin:0}
+.msong header i{flex:none;width:34px;height:60px;border-radius:8px;background-size:cover;background-position:center;box-shadow:0 0 0 1px rgba(255,241,248,.6)}
+.msong header b{font-size:14px;line-height:1.3}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -402,7 +423,7 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
 
   <section id="top" class="screen" hidden aria-label="ホーム">
     <div class="floaty" id="floatyTop"></div>
-    <div class="topHead"><b>Pickle Melody</b><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button><button class="giftBtn" id="giftBtn" aria-label="プレゼントボックス"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6C10.5 3 7 3 7 5s3 1 5 1zM12 6c1.5-3 5-3 5-1s-3 1-5 1z"/></svg><span class="badge" id="giftBadge" hidden></span></button></div>
+    <div class="topHead"><b>Pickle Melody</b><button class="hpill" id="heartPill" aria-label="ライフ"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.1 3 4.5 6.6 4.5c2.2 0 3.9 1.3 5.4 3.2 1.5-1.9 3.2-3.2 5.4-3.2 3.6 0 5.7 3.6 4.2 7.1C19.5 16.4 12 21 12 21z"/></svg><span id="heartPillNum"></span><small id="heartPillTime"></small></button><button class="giftBtn" id="giftBtn" aria-label="プレゼントボックス"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19z"/><path d="M12 6v14.5"/><path d="M12 6C10.5 3 7 3 7 5s3 1 5 1zM12 6c1.5-3 5-3 5-1s-3 1-5 1z"/></svg><span class="badge" id="giftBadge" hidden></span></button><button class="giftBtn" id="missionBtn" aria-label="ミッション"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4"/><path d="M9.5 12h6M9.5 15.5h6M9.5 8.5h2.5"/></svg><span class="badge" id="missionBadge" hidden></span></button></div>
     <button id="chara" aria-label="話しかける"><img id="charaImg" alt=""></button>
     <div class="talk" id="talk" hidden aria-live="polite"><p id="talkText"></p></div>
     <div class="myName"><small>MY PARTNER</small><b id="charaName"></b></div>
@@ -543,6 +564,12 @@ button:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
   <div class="sheet" id="sheetGift" hidden><div class="panel" role="dialog" aria-label="プレゼントボックス">
     <header><h3>プレゼントボックス</h3><button class="close" aria-label="閉じる">×</button></header>
     <div class="gifts" id="giftList"></div>
+  </div></div>
+  <div class="sheet" id="sheetMission" hidden><div class="panel" role="dialog" aria-label="ミッション">
+    <header><h3>ミッション</h3><button class="close" aria-label="閉じる">×</button></header>
+    <div class="mseg" role="tablist"><button role="tab" data-mt="daily">デイリー</button><button role="tab" data-mt="song">楽曲</button></div>
+    <p class="mnote" id="missionNote"></p>
+    <div class="mlist" id="missionList"></div>
   </div></div>
   <div class="sheet" id="sheetVol" hidden><div class="panel" role="dialog" aria-label="音量">
     <header><h3>音量</h3><button class="close" aria-label="閉じる">×</button></header>
@@ -821,6 +848,7 @@ document.querySelectorAll('.sheet').forEach(sh=>{
 });
 // お知らせ（新しいものを上に書き足す）
 const NEWS = [
+  {date:'2026.10.31', title:'ミッションができました', body:'ホーム左の書類アイコンから。毎日のデイリーミッションと、曲ごとの楽曲ミッションをクリアすると魂片がもらえます ♡'},
   {date:'2026.10.31', title:'新曲2曲がSHOPに登場！', body:'「ブロッコリー投げ女」「ぽんたは天才だぽん！」を魂片と交換できるようになりました。試聴もできます ♡ 「メロウ・マイ・ディア」もSHOPでの交換になりました（これまで遊んでいた方はそのまま遊べます）。'},
   {date:'2026.10.31', title:'難易度 HARD を追加、EXTRA がさらに難しく', body:'これまでの EXTRA を少しやさしくした HARD を追加しました。EXTRA はノーツと同時押しが増えて手ごたえアップ！これまでの EXTRA のベストスコアは HARD に引き継いでいます。'},
   {date:'2026.10.31', title:'タイトルが「Pickle Melody」になりました', body:'オープニングのイラストも2枚増えて、開くたびにランダムで表示されます ♡'},
@@ -1010,7 +1038,7 @@ function renderSongShop(){
       bb.onclick = ()=>{ playSE('ui'); confirmBuy('「'+x.title+'」と交換します', x.price, ()=>{
         if(!spendSouls(x.price)) return;
         store.set('songsOwned', [...new Set([...ownedIds(), x.id])]);
-        renderRail(); renderSongShop(); playSE('tap'); toast('「'+x.title+'」が曲選択に追加されました ♡');
+        renderRail(); renderSongShop(); renderMissions(); playSE('tap'); toast('「'+x.title+'」が曲選択に追加されました ♡');
       }); };
     }
     box.appendChild(d);
@@ -1082,6 +1110,90 @@ function renderGifts(){
 }
 $('giftBtn').onclick = ()=>{ renderGifts(); openSheet('sheetGift'); };
 renderGifts();
+
+/* ---------- ミッション ---------- */
+// デイリーは端末の時計で毎日 0:00 に切り替わる。○回プレイは曲・難易度を問わず、曲を最後まで遊んだ回数
+const DAILY = [
+  {id:'login', title:'ログインする',     need:1, souls:1, val:d=>1},
+  {id:'play1', title:'1曲プレイする',    need:1, souls:1, val:d=>d.plays},
+  {id:'play3', title:'3回プレイする',    need:3, souls:2, val:d=>d.plays},
+  {id:'play5', title:'5回プレイする',    need:5, souls:3, val:d=>d.plays},
+];
+const DAILY_BONUS = {id:'all', title:'デイリーミッションをすべて達成', souls:10};
+// 楽曲ミッション（持っている曲ごと・1回だけ）
+const SONG_MISSIONS = [
+  {id:'play', title:'この曲をプレイする',     souls:1, ok:x=>store.get('plays.'+x.id, 0) >= 1},
+  {id:'nA',   title:'NORMAL で Aランク以上',  souls:2, ok:x=>store.get('best.'+x.id+'.normal', 0) >= 900000},
+  {id:'hS',   title:'HARD で Sランク以上',    souls:3, ok:x=>store.get('best.'+x.id+'.hard', 0) >= 950000},
+  {id:'xFC',  title:'EXTRA でフルコンボ',     souls:5, ok:x=>!!store.get('fc.'+x.id+'.extra', false)},
+];
+function today(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function daily(){
+  let d = store.get('daily', null);
+  if(!d || d.date !== today()){ d = {date:today(), plays:0, got:[]}; store.set('daily', d); }
+  return d;
+}
+function recordPlay(x, df, fc){
+  const d = daily(); d.plays++; store.set('daily', d);
+  store.set('plays.'+x.id, store.get('plays.'+x.id, 0) + 1);
+  if(fc) store.set('fc.'+x.id+'.'+df, true);
+  renderMissions();
+}
+function dailyRows(){
+  const d = daily();
+  const rows = DAILY.map(m=>({key:'d:'+m.id, title:m.title, souls:m.souls, prog:Math.min(m.need, m.val(d))+'/'+m.need,
+    ok:m.val(d) >= m.need, got:d.got.includes(m.id), claim:()=>{ d.got.push(m.id); store.set('daily', d); }}));
+  const all = DAILY.every(m=>m.val(d) >= m.need);
+  rows.push({key:'d:all', bonus:true, title:DAILY_BONUS.title, souls:DAILY_BONUS.souls, prog:DAILY.filter(m=>m.val(d)>=m.need).length+'/'+DAILY.length,
+    ok:all, got:d.got.includes('all'), claim:()=>{ d.got.push('all'); store.set('daily', d); }});
+  return rows;
+}
+function songRows(x){
+  const got = store.get('smGot', []);
+  return SONG_MISSIONS.map(m=>{ const k = x.id+':'+m.id; return {key:'s:'+k, title:m.title, souls:m.souls, ok:m.ok(x), got:got.includes(k),
+    claim:()=>store.set('smGot', [...store.get('smGot', []), k])}; });
+}
+function claimable(){
+  return dailyRows().filter(r=>r.ok && !r.got).length + SONGS.filter(hasSong).reduce((a,x)=>a + songRows(x).filter(r=>r.ok && !r.got).length, 0);
+}
+let missionTab = 'daily';
+function missionRow(r){
+  const b = document.createElement('button'); b.className = 'mis'+(r.got?' done':r.ok?' ready':'')+(r.bonus?' bonus':'');
+  b.innerHTML = '<b></b><span class="rw"><img class="soulIc" src="img/soul.webp" alt="">×'+r.souls+'</span><span class="st"><span></span><small></small></span>';
+  b.querySelector('b').textContent = r.title;
+  b.querySelector('.st span').textContent = r.got ? '受け取り済み ♡' : r.ok ? '達成！プレゼントを受け取ってね！' : '未達成…チャレンジしてみよう！';
+  b.querySelector('.st small').textContent = r.prog || '';
+  b.onclick = ()=>{
+    if(r.got || !r.ok){ playSE('ui'); return; }
+    r.claim(); addSouls(r.souls); playSE('tap'); toast('魂片を'+r.souls+'個受け取りました ♡'); renderMissions();
+  };
+  return b;
+}
+function renderMissions(){
+  const n = claimable(); $('missionBadge').hidden = !n; $('missionBadge').textContent = n;
+  if($('sheetMission').hidden) return;
+  document.querySelectorAll('.mseg button').forEach(b=>b.setAttribute('aria-selected', b.dataset.mt===missionTab));
+  const list = $('missionList'); list.innerHTML = '';
+  if(missionTab==='daily'){
+    const now = new Date(), next = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1), left = next - now;
+    $('missionNote').textContent = '毎日 0:00 に新しくなります（あと '+Math.floor(left/3600000)+'時間'+Math.floor(left/60000)%60+'分）';
+    dailyRows().forEach(r=>list.appendChild(missionRow(r)));
+  } else {
+    $('missionNote').textContent = '持っている曲ごとのミッションです（1回だけ受け取れます）';
+    SONGS.filter(hasSong).forEach(x=>{
+      const g = document.createElement('div'); g.className = 'msong';
+      g.innerHTML = `<header><i style="background-image:url(img/t_${x.key}.jpg)"></i><b></b></header>`;
+      g.querySelector('b').textContent = x.title;
+      songRows(x).forEach(r=>g.appendChild(missionRow(r)));
+      list.appendChild(g);
+    });
+  }
+}
+document.querySelectorAll('.mseg button').forEach(b=>b.onclick = ()=>{ playSE('ui'); missionTab = b.dataset.mt; renderMissions(); $('missionList').parentElement.scrollTop = 0; });
+$('missionBtn').onclick = ()=>{ openSheet('sheetMission'); renderMissions(); };
+// 開いている間に日付が変わっても切り替わるように
+setInterval(()=>{ if(state!=='play'){ daily(); renderMissions(); } }, 30000);
+daily(); renderMissions();
 
 /* ---------- リンク ---------- */
 LINK_ORDER.map(k=>STANDS.find(s=>s.key===k)).forEach(s=>{
@@ -1427,6 +1539,7 @@ function finish(){
   const key='best.'+song.id+'.'+diff, prev = store.get(key, 0);
   $('rBest').textContent = sc>prev ? 'NEW BEST ♡' : 'BEST '+prev.toLocaleString();
   if(sc>prev) store.set(key, sc);
+  recordPlay(song, diff, J.m===0);
   lastResult = {title:song.title, diff:diff.toUpperCase(), lv:song.lv[diff], score:sc, rank, badge:$('rBadge').textContent,
     p:J.p, g:J.g, o:J.o, m:J.m, combo:maxCombo, total:totalJ, newBest:sc>prev};
   // 共有メニューはタップした瞬間に呼ばないと開けないため、ジャケット画像は結果表示の時点で用意しておく
