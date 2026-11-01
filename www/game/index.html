@@ -624,6 +624,22 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('pm.'+k); return v==null?d:JSON.parse(v);}catch(e){return d;} },
   set(k, v){ try{ localStorage.setItem('pm.'+k, JSON.stringify(v)); }catch(e){} }
 };
+// リリース時のリセット（各端末で1回だけ）。開発中に増えた魂片と、買ったもの・受け取ったものを最初の状態に戻す。
+// スコア・プレイ記録・設定はそのまま。以前から遊んでいた人のメロウ・マイ・ディアは残す。
+// もう一度全員リセットしたい時は RESET_ID を変える
+const RESET_ID = 'release-2026-11';
+if(RETURNING && store.get('resetId', '') !== RESET_ID){
+  const mellow = SONGS.find(x=>x.key==='mellow');
+  const keepMellow = mellow && (store.get('songsOwned', []) || []).includes(mellow.id);
+  store.set('souls', 0); store.set('mig.soul100', true);
+  store.set('songsOwned', keepMellow ? [mellow.id] : []);
+  store.set('themes', []); store.set('theme', 'purple');
+  store.set('charasOwned', []);
+  if(['mero','ponta','broccoli'].includes(store.get('partner', ''))) store.set('partner', 'kyuri');
+  store.set('giftsGot', []); store.set('smGot', []);
+  try{ localStorage.removeItem('pm.daily'); localStorage.removeItem('pm.hearts'); }catch(e){}
+}
+store.set('resetId', RESET_ID);
 try{ if(navigator.audioSession) navigator.audioSession.type = 'playback'; }catch(e){}
 
 /* ---------- audio ---------- */
@@ -986,7 +1002,7 @@ renderHearts();
 /* ---------- 魂片（ゲーム内通貨） ---------- */
 // 所持数はこの端末に保存。魂片の購入を実装したら addSouls(n) で増やす
 // 開発中は開くたびに魂片を DEV_SOULS まで補充する。配信するときは 0 にする（補充されなくなる）
-const DEV_SOULS = 99900;
+const DEV_SOULS = 0;
 function souls(){ const n = store.get('souls', 0); return typeof n==='number' && n>=0 ? Math.floor(n) : 0; }
 function addSouls(n){ store.set('souls', Math.max(0, souls() + n)); renderShop(); }
 function spendSouls(n){ if(souls() < n) return false; store.set('souls', souls() - n); renderShop(); return true; }
