@@ -625,14 +625,12 @@ const store = {
   set(k, v){ try{ localStorage.setItem('pm.'+k, JSON.stringify(v)); }catch(e){} }
 };
 // リリース時のリセット（各端末で1回だけ）。開発中に増えた魂片と、買ったもの・受け取ったものを最初の状態に戻す。
-// スコア・プレイ記録・設定はそのまま。以前から遊んでいた人のメロウ・マイ・ディアは残す。
+// スコア・プレイ記録・設定はそのまま。メロウ・マイ・ディアも全員購入制に戻す。
 // もう一度全員リセットしたい時は RESET_ID を変える
 const RESET_ID = 'release-2026-11';
 if(RETURNING && store.get('resetId', '') !== RESET_ID){
-  const mellow = SONGS.find(x=>x.key==='mellow');
-  const keepMellow = mellow && (store.get('songsOwned', []) || []).includes(mellow.id);
   store.set('souls', 0); store.set('mig.soul100', true);
-  store.set('songsOwned', keepMellow ? [mellow.id] : []);
+  store.set('songsOwned', []);
   store.set('themes', []); store.set('theme', 'purple');
   store.set('charasOwned', []);
   if(['mero','ponta','broccoli'].includes(store.get('partner', ''))) store.set('partner', 'kyuri');
@@ -640,6 +638,12 @@ if(RETURNING && store.get('resetId', '') !== RESET_ID){
   try{ localStorage.removeItem('pm.daily'); localStorage.removeItem('pm.hearts'); }catch(e){}
 }
 store.set('resetId', RESET_ID);
+// すでにリセット済みの端末でも、以前から遊んでいた人に配っていたメロウ・マイ・ディアを外す（1回だけ）
+if(!store.get('mig.mellowPaid', false)){
+  const mellow = SONGS.find(x=>x.key==='mellow');
+  if(mellow) store.set('songsOwned', (store.get('songsOwned', []) || []).filter(id=>id!==mellow.id));
+  store.set('mig.mellowPaid', true);
+}
 try{ if(navigator.audioSession) navigator.audioSession.type = 'playback'; }catch(e){}
 
 /* ---------- audio ---------- */
@@ -749,11 +753,7 @@ for(const fl of [$('floaty'), $('floatyTop')]) for(let i=0;i<14;i++){ const s=do
   s.style.animationDuration=(9+Math.random()*10)+'s'; s.style.animationDelay=(-Math.random()*18)+'s'; if(i%4===0) s.style.color='var(--lilac)'; if(i%5===0) s.style.color='var(--mint)'; fl.appendChild(s); }
 // song rail
 // 値段のある曲は SHOP で魂片と交換すると曲選択に出る
-if(!store.get('songsInit', false)){
-  const mellow = SONGS.find(x=>x.key==='mellow');
-  if(RETURNING && mellow) store.set('songsOwned', [mellow.id]);
-  store.set('songsInit', true);
-}
+store.set('songsInit', true);
 function ownedIds(){ const o = store.get('songsOwned', []); return Array.isArray(o) ? o : []; }
 function hasSong(x){ return !x.price || ownedIds().includes(x.id); }
 function renderRail(){
@@ -902,6 +902,7 @@ document.querySelectorAll('.sheet').forEach(sh=>{
 });
 // お知らせ（新しいものを上に書き足す）
 const NEWS = [
+  {date:'2026.11.01', title:'「メロウ・マイ・ディア」はSHOPでの交換になりました', body:'すべての方がSHOPの「楽曲」から魂片で交換できます。試聴もできるので、ぜひ聴いてみてね ♡'},
   {date:'2026.10.31', title:'新しいキャラクターがSHOPに登場！', body:'那須野メロ・黄桃ぽんた・ブロッコリー女を、SHOPの「スキン」から迎えられます。迎えた子はホームでお喋りしたり、曲選択に遊びに来たりします ♡'},
   {date:'2026.10.31', title:'タップのノーツをなぞっても判定されるように', body:'指を画面に置いたままスライドして、白いタップ（同時押しの金色も）を通過すると判定されます。フリックと長押しは今までどおりです。'},
   {date:'2026.10.31', title:'ミッションができました', body:'ホーム左の書類アイコンから。毎日のデイリーミッションと、曲ごとの楽曲ミッションをクリアすると魂片がもらえます ♡'},
