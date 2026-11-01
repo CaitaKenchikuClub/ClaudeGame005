@@ -909,7 +909,7 @@ const NEWS = [
   {date:'2026.10.31', title:'新曲2曲がSHOPに登場！', body:'「ブロッコリー投げ女」「ぽんたは天才だぽん！」を魂片と交換できるようになりました。試聴もできます ♡ 「メロウ・マイ・ディア」もSHOPでの交換になりました（これまで遊んでいた方はそのまま遊べます）。'},
   {date:'2026.10.31', title:'難易度 HARD を追加、EXTRA がさらに難しく', body:'これまでの EXTRA を少しやさしくした HARD を追加しました。EXTRA はノーツと同時押しが増えて手ごたえアップ！これまでの EXTRA のベストスコアは HARD に引き継いでいます。'},
   {date:'2026.10.31', title:'タイトルが「Pickle Melody」になりました', body:'オープニングのイラストも2枚増えて、開くたびにランダムで表示されます ♡'},
-  {date:'2026.10.31', title:'SHOPとプレゼントボックスができました', body:'魂片でライフの回復や背景テーマの購入ができます。プレゼントボックスに、はじめましてプレゼント（魂片1,000個）が届いています ♡'},
+  {date:'2026.10.31', title:'SHOPとプレゼントボックスができました', body:'魂片でライフの回復や背景テーマの購入ができます。プレゼントボックスに、はじめましてプレゼント（魂片8,000個）が届いています ♡'},
   {date:'2026.10.30', title:'ホーム画面ができました！', body:'お気に入りの子をホームに呼んで、お喋りできるようになりました。右の「キャラ変更」から選んでね。'},
   {date:'2026.10.30', title:'リザルトをXでシェア', body:'リザルト画面の「スコアをポストする」から、ジャケット入りのリザルト画像つきでポストできます。'},
   {date:'2026.10.17', title:'Pickle Melody 公開', body:'7曲・3難易度で遊べます。イヤホン推奨です ♡'},
@@ -1178,8 +1178,15 @@ applyTheme(); renderShop();
 
 /* ---------- プレゼントボックス ---------- */
 // プレゼントはここに書き足す（id は一度決めたら変えない。受け取り済みかどうかの記録に使う）
+// はじめましてプレゼントを 1,000 → 8,000 に増やした時、すでに 1,000 を受け取っていた人には差額 7,000 を届ける
+if(!store.get('mig.welcome8000', false)){
+  const got0 = store.get('giftsGot', []) || [];
+  if(got0.includes('welcome-2026-10')) store.set('welcomeTopUp', true);
+  store.set('mig.welcome8000', true);
+}
 const GIFTS = [
-  {id:'welcome-2026-10', title:'はじめましてプレゼント', body:'Pickle Melody へようこそ！SHOPで使ってね ♡', souls:1000},
+  {id:'welcome-2026-10', title:'はじめましてプレゼント', body:'Pickle Melody へようこそ！キャラと楽曲をひとつずつ迎えられるよ ♡', souls:8000},
+  ...(store.get('welcomeTopUp', false) ? [{id:'welcome-topup-2026-11', title:'はじめましてプレゼント（追加分）', body:'はじめましてプレゼントが 8,000 魂片になりました。受け取り済みの方へ差額をお届けします ♡', souls:7000}] : []),
 ];
 function giftsGot(){ const g = store.get('giftsGot', []); return Array.isArray(g) ? g : []; }
 function renderGifts(){
